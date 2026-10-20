@@ -1,0 +1,186 @@
+{
+  "as_of": "2026-10-19",
+  "market": {
+    "debt": 4441600000.0,
+    "cash": 13205700000.0,
+    "nci": 0.0,
+    "preferred": 0.0,
+    "nonoperating_assets": 5509900000.0,
+    "price": 1265.5,
+    "price_date": "2026-10-16",
+    "valuation_date": "2026-10-19",
+    "current_shares": 1928314320,
+    "diluted_shares": 1928314320,
+    "shares_date": "2026-03-31",
+    "balance_date": "2026-03-31",
+    "accounting_scope": "consolidated",
+    "currency": "INR",
+    "other_senior_claims": 20898300000,
+    "interim_dividends": 9641571600,
+    "lease_policy": "Borrowings and lease liabilities deducted once, with post-Ind AS116 operating EBITDA. Renewal-lease capex requires review.",
+    "quote_source": "NSE India home market display,16-Oct-2026 close, accessed19-Oct-2026. https://www.nseindia.com/ . Not a live19-Oct quote."
+  },
+  "methods": [
+    {
+      "method": "DCF FCFF",
+      "applicable": "Yes",
+      "importance": "High",
+      "reason": "Conditional intrinsic cash-flow method using sourced statements and explicit company-specific scenarios.",
+      "weight": 0.8,
+      "weight_rationale": "Analyst reconciliation based on cash-flow visibility and company suitability; correlated methods are not independent proof."
+    },
+    {
+      "method": "FCFE",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: unstable financing or incomplete cash distribution policy prevents a reliable equity-cash-flow interpretation.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "Forward P/E",
+      "applicable": "Yes",
+      "importance": "Low",
+      "reason": "Analyst forward multiple stress cases, not peer-backed CCA. Zero reconciliation weight.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "EV/EBITDA",
+      "applicable": "Yes",
+      "importance": "Low",
+      "reason": "Analyst forward multiple stress cases, not peer-backed CCA. Zero reconciliation weight.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "EV/EBIT",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: inferior denominator or no suitable matched-period peers; correlated multiples add no independent evidence.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "EV/Sales",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: inferior denominator or no suitable matched-period peers; correlated multiples add no independent evidence.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "P/S",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: inferior denominator or no suitable matched-period peers; correlated multiples add no independent evidence.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "PEG",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: inferior denominator or no suitable matched-period peers; correlated multiples add no independent evidence.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "Precedent EV/Revenue",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: no verified matching transaction consideration, ownership, enterprise-value and financial denominator.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "Precedent EV/EBITDA",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: no verified matching transaction consideration, ownership, enterprise-value and financial denominator.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "DDM",
+      "applicable": "Yes",
+      "importance": "High",
+      "reason": "Secondary dividend-policy cross-check for a mature regular distributor; payout, timing and terminal returns remain estimates.",
+      "weight": 0.2,
+      "weight_rationale": "Analyst reconciliation based on cash-flow visibility and company suitability; correlated methods are not independent proof."
+    },
+    {
+      "method": "Residual income",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: historical OCI and equity adjustments have not been reconciled to clean surplus.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "NAV",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: no independently justified realizable asset values; book values omit brand economics.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "SOTP",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: segment forecasts, ownership-adjusted values or suitable evidence not sufficient for this method.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    }
+  ],
+  "revenue_route": "Volume and price/mix",
+  "margin_route": "EBITDA margin",
+  "direct_growth_rationale": "The 15-Oct-2026 Q2 disclosure reports double-digit volume growth and sales growth20.5%, with advertising up46% and EBITDA margin23.8%. Forecasts incorporate stronger volume than a FY26-only extrapolation, fade to mature growth and stress cocoa, milk and edible-oil costs. Exact volume/price split is analyst judgment, not disclosed guidance.",
+  "drivers": [
+    {
+      "driver": "The 15-Oct-2026 Q2 disclosure reports double-digit volume growth and sales growth20.5%, with advertising up46% and EBITDA margin23.8%. Forecasts incorporate stronger volume than a FY26-only extrapolation, fade to mature growth and stress cocoa, milk and edible-oil costs. Exact volume/price split is analyst judgment, not disclosed guidance.",
+      "source_type": "historical",
+      "confidence": "medium",
+      "source": "FY26 consolidated statements and latest result presentation"
+    }
+  ],
+  "research_notes": [
+    {
+      "topic": "New September results",
+      "finding": "15-Oct-2026 official company filing establishes Q2 sales growth20.5%, double-digit volume growth, advertising/marketing spending up46% and EBITDA margin23.8%. These management-release figures are standalone. The consolidated statement is separately included in the same filing. Forecasts use this direction without treating the unspecified volume/price split as fact.",
+      "source": "https://www.nestle.in/sites/g/files/pydnoa451/files/2026-10/BSENSEOutcomeResults15102026signed.pdf pp7,13-15; accessed through public search, direct archive download returned403."
+    },
+    {
+      "topic": "Bonus and fiscal period",
+      "finding": "Shares doubled on11-Aug-2025. FY26 current denominator is1928314320 shares. FY25 closing shares are unadjusted history; published comparative EPS is bonus-adjusted. The fifteen-month FY2023-24 transition is not treated as a twelve-month comparable.",
+      "source": "FY26 annual report PDF134."
+    },
+    {
+      "topic": "Retirement obligations",
+      "finding": "DCF deducts INR2089.83cr pension/gratuity carrying liabilities (noncurrent18326.4m + current2571.9m) as an explicit debt-like proxy. The model does not pretend these are bank borrowings. Funding timetable, taxes and other contingencies require further work.",
+      "source": "Annual report PDF137, Note20."
+    },
+    {
+      "topic": "Dividend method",
+      "finding": "Secondary DDM uses lower forecast payout than historical cash dividends/earnings to allow reinvestment and retirement funding. It is a policy scenario, not declared future dividends.",
+      "source": "Annual report PDF119,134,137."
+    }
+  ],
+  "market_notes": [
+    "31-Mar-2026 balance and share basis rolled forward with estimated uniform interim FCFE, not a reported October balance.",
+    "Assume INR5 per share distribution after balance date. Payment timing is an explicit analyst case assumption, not independently confirmed bank settlement.",
+    "16-Oct close is the last dated reference used here. Latest intraday prices and later dilution are not asserted.",
+    "Other debt-like claims and nonoperating assets are carrying-value proxies. Minority buyout, pension and lease policies are described in Research."
+  ],
+  "issues": [
+    "Conditional analyst scenarios, not a precise fair-value recommendation. Capital costs, terminal returns, current cash bridge and multiples require analyst review.",
+    "Historical statements backfilled from 2022 where reporting periods exist. The Statement history schedule preserves as-reported scopes; only matching annual inputs feed the forecast.",
+    "No verified category-matched peer-forward estimate set or transaction database. Market multiples have zero reconciliation weight.",
+    "Native desktop Excel recalculation not verified. News checks may be incomplete and unverified headlines never change numerical forecasts automatically."
+  ],
+  "historical_model_basis": [
+    "consolidated",
+    "total"
+  ]
+}

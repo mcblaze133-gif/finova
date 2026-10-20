@@ -1,0 +1,63 @@
+{
+  "id": "f1aea21795c55e63",
+  "name": "Finova 04 Report retrieval",
+  "active": false,
+  "nodes": [
+    {
+      "id": "input",
+      "name": "Local input",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "118cce7e-6b44-5339-88fb-7db3d3e55246",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "signalai-report",
+        "responseMode": "lastNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "backend",
+      "name": "Finova bounded operation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        300,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "=http://127.0.0.1:8000/runs/{{ $json.body.run_id }}/report",
+        "options": {
+          "timeout": 110000
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Local input": {
+      "main": [
+        [
+          {
+            "node": "Finova bounded operation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "none",
+    "saveDataSuccessExecution": "none",
+    "saveExecutionProgress": false,
+    "executionTimeout": 120
+  },
+  "pinData": {},
+  "tags": []
+}

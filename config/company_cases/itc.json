@@ -1,0 +1,269 @@
+{
+  "as_of": "2026-10-19",
+  "market": {
+    "debt": 23990600000.0,
+    "cash": 6434600000.0,
+    "nci": 3657200000.0,
+    "preferred": 0.0,
+    "nonoperating_assets": 405418500000.0,
+    "price": 263.5,
+    "price_date": "2026-10-16",
+    "valuation_date": "2026-10-19",
+    "current_shares": 12529468231,
+    "diluted_shares": 12529468231,
+    "shares_date": "2026-03-31",
+    "balance_date": "2026-03-31",
+    "accounting_scope": "consolidated",
+    "currency": "INR",
+    "other_senior_claims": 0,
+    "interim_dividends": 103368112905.75,
+    "lease_policy": "Borrowings and lease liabilities deducted once, with post-Ind AS116 operating EBITDA. Renewal-lease capex requires review.",
+    "quote_source": "NSE India home market display,16-Oct-2026 close, accessed19-Oct-2026. https://www.nseindia.com/ . Not a live19-Oct quote."
+  },
+  "methods": [
+    {
+      "method": "DCF FCFF",
+      "applicable": "Yes",
+      "importance": "High",
+      "reason": "Conditional intrinsic cash-flow method using sourced statements and explicit company-specific scenarios.",
+      "weight": 0.4,
+      "weight_rationale": "Analyst reconciliation based on cash-flow visibility and company suitability; correlated methods are not independent proof."
+    },
+    {
+      "method": "FCFE",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: unstable financing or incomplete cash distribution policy prevents a reliable equity-cash-flow interpretation.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "Forward P/E",
+      "applicable": "Yes",
+      "importance": "Low",
+      "reason": "Analyst forward multiple stress cases, not peer-backed CCA. Zero reconciliation weight.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "EV/EBITDA",
+      "applicable": "Yes",
+      "importance": "Low",
+      "reason": "Analyst forward multiple stress cases, not peer-backed CCA. Zero reconciliation weight.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "EV/EBIT",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: inferior denominator or no suitable matched-period peers; correlated multiples add no independent evidence.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "EV/Sales",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: inferior denominator or no suitable matched-period peers; correlated multiples add no independent evidence.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "P/S",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: inferior denominator or no suitable matched-period peers; correlated multiples add no independent evidence.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "PEG",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: inferior denominator or no suitable matched-period peers; correlated multiples add no independent evidence.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "Precedent EV/Revenue",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: no verified matching transaction consideration, ownership, enterprise-value and financial denominator.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "Precedent EV/EBITDA",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: no verified matching transaction consideration, ownership, enterprise-value and financial denominator.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "DDM",
+      "applicable": "Yes",
+      "importance": "High",
+      "reason": "Secondary dividend-policy cross-check for a mature regular distributor; payout, timing and terminal returns remain estimates.",
+      "weight": 0.3,
+      "weight_rationale": "Analyst reconciliation based on cash-flow visibility and company suitability; correlated methods are not independent proof."
+    },
+    {
+      "method": "Residual income",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: historical OCI and equity adjustments have not been reconciled to clean surplus.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "NAV",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: no independently justified realizable asset values; book values omit brand economics.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "SOTP",
+      "applicable": "Yes",
+      "importance": "High",
+      "reason": "Distinct cigarette, FMCG-other, agri, paper and other EBIT valuations. Multiples are analyst stress ranges, not independently verified peers.",
+      "weight": 0.3,
+      "weight_rationale": "Analyst reconciliation based on cash-flow visibility and company suitability; correlated methods are not independent proof."
+    }
+  ],
+  "revenue_route": "Direct disclosed drivers",
+  "margin_route": "EBITDA margin",
+  "direct_growth_rationale": "Group growth is constructed as a judgment across cigarettes, other FMCG, agri, paper and other businesses. FY26 revenue is net of excise to avoid interpreting higher tax pass-through as economic growth. Cigarette taxation and illicit-trade substitution constrain the downside. Group EBITDA margin is a mix approximation and SOTP values each segment separately.",
+  "drivers": [
+    {
+      "driver": "Group growth is constructed as a judgment across cigarettes, other FMCG, agri, paper and other businesses. FY26 revenue is net of excise to avoid interpreting higher tax pass-through as economic growth. Cigarette taxation and illicit-trade substitution constrain the downside. Group EBITDA margin is a mix approximation and SOTP values each segment separately.",
+      "source_type": "historical",
+      "confidence": "medium",
+      "source": "FY26 consolidated statements and latest result presentation"
+    }
+  ],
+  "research_notes": [
+    {
+      "topic": "Tax pass-through",
+      "finding": "FY26 gross operating revenue INR89913.33cr includes excise INR11044.93cr. Model revenue is net INR78868.40cr. Operating EBITDA remains INR27317.91cr because excise is removed from both revenue and expenses. A gross revenue surge does not establish volume growth.",
+      "source": "FY26 annual report PDF253."
+    },
+    {
+      "topic": "Hotel demerger",
+      "finding": "FY25 total consolidated PAT INR35052.48cr includes discontinued operations and a large demerger effect. It is not the recurring earnings baseline. Retained equity-method hotel exposure is included only in nonoperating investments, not a hotel operating segment.",
+      "source": "FY26 annual report PDF252-253,325."
+    },
+    {
+      "topic": "Segment differences",
+      "finding": "Cigarettes, branded foods, agri and paper have different economics. SOTP applies explicit scenario-specific EBIT multiples to each disclosed segment and capitalises corporate costs separately. Multiples are analyst judgments pending sector-matched peer evidence.",
+      "source": "FY26 annual report PDF325."
+    },
+    {
+      "topic": "Financing and share changes",
+      "finding": "FY26 net borrowing changed sharply and employee share issues occurred. FCFE is excluded as a primary method. No new equity issuance is assumed in the forecast. Current fully diluted option allocation remains a limitation.",
+      "source": "Annual report PDF257,291."
+    },
+    {
+      "topic": "Dividend cross-check",
+      "finding": "Long regular distributions support a secondary DDM. Its payout assumptions and terminal ROE are explicit judgments and not independent confirmation of DCF.",
+      "source": "Annual report PDF254,257."
+    }
+  ],
+  "market_notes": [
+    "31-Mar-2026 balance and share basis rolled forward with estimated uniform interim FCFE, not a reported October balance.",
+    "Assume INR8.25 per share distribution after balance date. Payment timing is an explicit analyst case assumption, not independently confirmed bank settlement.",
+    "16-Oct close is the last dated reference used here. Latest intraday prices and later dilution are not asserted.",
+    "Other debt-like claims and nonoperating assets are carrying-value proxies. Minority buyout, pension and lease policies are described in Research."
+  ],
+  "issues": [
+    "Conditional analyst scenarios, not a precise fair-value recommendation. Capital costs, terminal returns, current cash bridge and multiples require analyst review.",
+    "Historical statements backfilled from 2022 where reporting periods exist. The Statement history schedule preserves as-reported scopes; only matching annual inputs feed the forecast.",
+    "No verified category-matched peer-forward estimate set or transaction database. Market multiples have zero reconciliation weight.",
+    "Native desktop Excel recalculation not verified. News checks may be incomplete and unverified headlines never change numerical forecasts automatically."
+  ],
+  "segments": [
+    {
+      "name": "Cigarettes",
+      "ebit": 222456200000.0,
+      "multiples": [
+        12,
+        15,
+        18
+      ],
+      "growth": [
+        -0.05,
+        0,
+        0.05
+      ],
+      "source": "FY26 consolidated annual report PDF325. EBIT multiples and one-year growth are analyst scenarios, not sourced peer targets."
+    },
+    {
+      "name": "FMCG other",
+      "ebit": 18118200000.0,
+      "multiples": [
+        18,
+        22,
+        26
+      ],
+      "growth": [
+        0.08,
+        0.12,
+        0.16
+      ],
+      "source": "FY26 consolidated annual report PDF325. EBIT multiples and one-year growth are analyst scenarios, not sourced peer targets."
+    },
+    {
+      "name": "Agri",
+      "ebit": 15842400000.0,
+      "multiples": [
+        9,
+        11,
+        13
+      ],
+      "growth": [
+        0,
+        0.05,
+        0.1
+      ],
+      "source": "FY26 consolidated annual report PDF325. EBIT multiples and one-year growth are analyst scenarios, not sourced peer targets."
+    },
+    {
+      "name": "Paper and packaging",
+      "ebit": 7540599999.999999,
+      "multiples": [
+        9,
+        11,
+        13
+      ],
+      "growth": [
+        -0.05,
+        0,
+        0.06
+      ],
+      "source": "FY26 consolidated annual report PDF325. EBIT multiples and one-year growth are analyst scenarios, not sourced peer targets."
+    },
+    {
+      "name": "Other",
+      "ebit": 6704000000.0,
+      "multiples": [
+        10,
+        12,
+        14
+      ],
+      "growth": [
+        0.02,
+        0.05,
+        0.08
+      ],
+      "source": "FY26 consolidated annual report PDF325. EBIT multiples and one-year growth are analyst scenarios, not sourced peer targets."
+    }
+  ],
+  "segment_corporate_cost": 13200000000,
+  "historical_model_basis": [
+    "consolidated",
+    "continuing"
+  ]
+}

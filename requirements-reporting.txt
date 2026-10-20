@@ -1,0 +1,5 @@
+# Optional PDF authoring and visual verification dependencies.
+# Core backend dependencies are in requirements.txt.
+reportlab==4.5.1
+Pillow==12.3.0
+pdfplumber==0.11.10

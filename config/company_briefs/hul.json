@@ -1,0 +1,42 @@
+{
+  "investor_summary": "The supplied June-quarter release reports volume-led growth alongside a weaker reported profit comparison affected by a prior-year tax credit. A company valuation has not yet been completed.",
+  "findings": [
+    {
+      "title": "Reported profit and underlying performance differ",
+      "finding": "The supplied release reports a 2% decline in profit after tax, but 9% growth in profit before exceptional items. It attributes the reported decline to a prior-year one-off tax credit.",
+      "investor_use": "A lower reported profit does not, by itself, establish deteriorating operations. Compare the recurring earnings basis before applying a P/E multiple."
+    }
+  ],
+  "reported_results": {
+    "period": "Quarter ended 30 June 2026",
+    "scope": "Consolidated",
+    "metrics": [
+      {
+        "label": "Turnover",
+        "display_value": "₹17,184 crore",
+        "source_value": "17,184"
+      },
+      {
+        "label": "EBITDA",
+        "display_value": "₹3,947 crore",
+        "source_value": "3,947"
+      },
+      {
+        "label": "Reported profit after tax",
+        "display_value": "₹2,680 crore",
+        "source_value": "2,680"
+      },
+      {
+        "label": "Underlying volume growth",
+        "display_value": "5%",
+        "source_value": "Underlying Volume Growth 5%"
+      }
+    ],
+    "source_file": "HUL/analyst report/hul-jq-26-results-presentation.pdf",
+    "source_sha256": "e5d2de83d3620d29a3c4677dea3958ea91cfcc5e980d85d1bd19ab12dcc4a9f8",
+    "source_page": 2,
+    "source_document_id": 3,
+    "source_quote": "CONSOLIDATED RESULTS FOR THE QUARTER ENDED 30th JUNE 2026 Revenue Growth 10%, Underlying Volume Growth 5%, EBITDA Growth 8% Mumbai, 28th July 2026: Hindustan Unilever Limited announced its results for the quarter ended 30 th June 2026. Key highlights for June Quarter: • Delivered our highest growth in 13 quarters, with USG¹ of 10% and Turnover of ₹ 17,184 crores • EBITDA Margin at 23.0% remained within the guided range while navigating a volatile operating environment • EBITDA at ₹ 3,947 crores grew 8% year-on-year • Profit After Tax before exceptional items grew 9% year-on-year to ₹ 2,731 crores • Reported Profit After Tax at ₹ 2,680 crores declined 2% year-on-year due to one-off tax credit in JQ’25 Home Care: Delivered 14% USG, marking its highest growth in three years while strengthening market leadership Home Care delivered 14% USG, driven by high- single digit UVG2. Disciplined market development and consumer-centric innovations enabled our highest growth in three years and strengthened market leadership, while maintaining volume resilience. Fabric Wash accelerated its performance, delivering double- digit USG, driven by high-single digit UVG. Bars and powders sustained their step-up, while liquids further accelerated its double-digit growth trajectory. Household Care delivered double-digit USG and UVG. Vim Liquids continued to scale, with focused initiatives boosting penetration and delivering strong double-digit growth. Beauty & Wellbeing: Recorded 12% USG, double -digit growth in Premium Skin Care and Hair Care Beauty & Wellbeing recorded 12% USG, driven by high- single digit UVG. Hair Care achieved double-digit USG driven by Premium Hair Care including future-formats, while the category continued to strengthen market leadership. Skin Care and Colour Cosmetics delivered high- single digit USG, led by double-digit growth in P remium Skin Care. Minimalist delivered double-digit growth with sequential acceleration in momentum. During the quarter , Liquid I.V. launched a sugar -free variant and Vaseline launched a Gluta Hya Smoothening Body Lotion to address evolving consumer needs. Personal Care: Reported 4% USG, strong growth in Premium B ars and strengthened market leadership in Bodywash Personal Care reported 4% USG led by pricing, as palm oil inflation persisted for the second consecutive year. Skin Cleansing posted mid- single digit USG, led by P remium Bars delivering competitive double- digit, volume-led growth. Bodywash continued its double- digit growth momentum while improving market leadership. Oral Care reported mid-single digit growth, with premium innovations in Closeup White Now, Pepsodent Gum Care and Sensitive Care continuing to gain traction. During the quarter, Lux launched a refreshed Bodywash proposition that combines superior skincare benefits with premium packaging. Foods: Delivered 7% USG, continued strong performance in Lifestyle Nutrition and Coffee Foods delivered 7% USG, driven by mid-single digit UVG. Premium Tea reported low-single digit UVG. Coffee delivered double- digit, volume-led growth, with RTD and Bru Gold continuing to scale up. Lifestyle Nutrition continued its double-digit growth momentum. Boost surpassed ₹ 1,000 crore annual turnover milestone 3, while Horlicks Superfoods and RTD continued to see encouraging traction. Packaged Foods delivered high-single digit USG, led by Unilever Foods Solutions, Mayonnaise, and International Sauces. During the quarter, the segment strengthened its premium portfolio, relaunching Bru Southern Trails Coffee and extending Red Label Instant Tea and Kissan Chutney range with new variants. Priya Nair, CEO and Managing Director, commented: “Despite global geopolitical volatility, the Indian economy demonstrated resilience, supported by proactive fiscal and monetary policy measures. The underlying demand environment remained stable during the quarter. Against this backdrop, HUL delivered turnover of ₹ 17,184 crores and 10% USG, driven equally by volume and price. This marks our highest growth in thirteen quarters. The performance reflects the strength of our brands, increasing competitiveness of our portfolio, and disciplined execution of our strategic priorities. As our investments in market development, channel expansion and portfolio transformation continue to scale, we are building a stronger, future- fit business. While we continue to navigate the short -term dynamic environment, we remain focused on driving volume- led revenue growth.” 1. Underlying Sales Growth (USG) refers to the increase in turnover for the period, excluding any change resulting from acquisitions and disposals 2. Underlying Volume Growth (UVG) refers to volume growth including the impact of mix of turnover realisation of products sold 3. Annual turnover milestone based on trailing 12‑months turnover",
+    "qualification": "Source-reported figures from the supplied document. These are not valuation estimates or independently corroborated financials."
+  }
+}

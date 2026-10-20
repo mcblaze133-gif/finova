@@ -1,0 +1,4 @@
+{
+  "search_mode": "public_news_feeds",
+  "note": "Live public RSS discovery plus free-tier Gemini interpretation. The documented gemini-2.5-flash-lite search model returned HTTP 404 in the live test on 2026-10-18; it is not used by default. News headlines remain unverified leads."
+}

@@ -1,0 +1,42 @@
+{
+  "investor_summary": "The supplied annual filing shows why total profit and continuing-business profit must be analysed separately. ITC also needs segment-sensitive valuation treatment; a completed company valuation is not available yet.",
+  "findings": [
+    {
+      "title": "Discontinued operations distort the profit comparison",
+      "finding": "The supplied annual statement reports FY2025 profit from discontinued operations of ₹15,016.01 crore. FY2026 shows none. Continuing-operations profit is ₹21,018.15 crore against ₹20,036.47 crore in FY2025.",
+      "investor_use": "A comparison of total profit across these years mixes different business scopes. Reconcile continuing earnings and segment economics before selecting valuation multiples."
+    }
+  ],
+  "reported_results": {
+    "period": "Year ended 31 March 2026",
+    "scope": "Consolidated; continuing operations where specified",
+    "metrics": [
+      {
+        "label": "Revenue from operations, including excise",
+        "display_value": "₹89,913.33 crore",
+        "source_value": "89913.33"
+      },
+      {
+        "label": "Profit from continuing operations",
+        "display_value": "₹21,018.15 crore",
+        "source_value": "21018.15"
+      },
+      {
+        "label": "Parent-attributable profit, total",
+        "display_value": "₹20,689.47 crore",
+        "source_value": "20689.47"
+      },
+      {
+        "label": "Diluted EPS, continuing operations",
+        "display_value": "₹16.51",
+        "source_value": "16.51"
+      }
+    ],
+    "source_file": "ITC/report/ITC-Report-and-Accounts-2026.pdf",
+    "source_sha256": "a7c3a85f3748cebb7b8811d66080568f2fbd6d8f67ebe18335e749f1ed8fdfc1",
+    "source_page": 253,
+    "source_document_id": 195,
+    "source_quote": "Consolidated Statement of Profit and Loss for the year ended 31st March, 2026 For the year ended For the year ended Note 31st March, 2026 31st March, 2025 (` in Crores) (` in Crores) Continuing Operations I Revenue From Operations 23A,23B 89913.33 81612.78 II Other Income 24 2425.80 2529.69 III Total Income (I+II) 92339.13 84142.47 IV EXPENSES Cost of materials consumed 26272.33 23757.33 Purchases of Stock-in-Trade and Biological Assets 8826.01 8947.04 Changes in inventories of finished goods, Stock-in-Trade, work-in-progress, intermediates and Biological Assets 25 (2550.46) (725.65) Excise duty 11044.93 6289.44 Employee benefits expense 26 6781.50 6169.78 Finance costs 27 85.17 45.06 Depreciation and amortization expense 1710.53 1646.32 Other expenses 28 12221.11 11196.63 Total expenses (IV) 64391.12 57325.95 V Share of profit / (loss) of Associates and Joint Ventures 377.08 110.42 VI Profit before exceptional items and tax (III-IV+V) 28325.09 26926.94 VII Exceptional Items 30(i) (291.70) – VIII Profit before tax (VI+VII) 28033.39 26926.94 IX Tax expense: Current Tax 29 6412.97 6509.61 Deferred Tax 29 602.27 380.86 X Profit for the year from continuing operations (VIII-IX) 21018.15 20036.47 XI Profit before exceptional items and tax from discontinued operations – 525.84 XII Exceptional Items of discontinued operations – 15128.81 XIII Tax expense of discontinued operations 29 – 638.64 XIV Profit for the year from discontinued operations (XI+XII-XIII) – 15016.01 XV Profit for the year (X+XIV) 21018.15 35052.48 Other Comprehensive Income A (i) Items that will not be reclassified to profit or loss: – Remeasurements of the defined benefit plans 30(vi) (22.05) (26.13) – Equity instruments through other comprehensive income (839.64) (1043.31) – Effective portion of gains / (losses) on designated portion of hedging instruments in a cash flow hedge 33.54 0.23 – Share of other comprehensive income in Associates and Joint Ventures (7.12) (3.41) (ii) Income tax relating to items that will not be reclassified to profit or loss 29 111.65 59.58 B (i) Items that will be reclassified to profit or loss: – Exchange differences on translating the financial statements of foreign operations 131.48 352.94 – Debt instruments through other comprehensive income (61.73) 72.81 – Effective portion of gains / (losses) on designated portion of hedging instruments in a cash flow hedge (78.57) (12.98) – Share of other comprehensive income in Associates and Joint Ventures 53.74 (14.45) (ii) Income tax relating to items that will be reclassified to profit or loss 29 35.41 (10.14) XVI Other Comprehensive Income [A(i+ii)+B(i+ii)] (643.29) (624.86) XVII Total Comprehensive Income for the year (XV+XVI) 20374.86 34427.62 Profit for the year Attributable to: Owners of the parent 20689.47 34746.63 Non-controlling interests 328.68 305.85 Other Comprehensive Income Attributable to: Owners of the parent (642.20) (624.87) Non-controlling interests (1.09) 0.01 Total Comprehensive Income for the year Attributable to: Owners of the parent 20047.27 34121.76 Non-controlling interests 327.59 305.86 XVIII Earnings per equity share (Face Value ` 1.00 each): 30(ii) For Continuing Operations (a) Basic (in `) 16.52 15.78 (b) Diluted (in `) 16.51 15.76 For Discontinued Operations (a) Basic (in `) – 12.01 (b) Diluted (in `) – 11.99 For Continuing and Discontinued Operations (a) Basic (in `) 16.52 27.79 (b) Diluted (in `) 16.51 27.75 The accompanying notes 1 to 33 are an integral part of the Consolidated Financial Statements. On behalf of the Board In terms of our report attached For S R B C & CO LLP S. PURI\b Chairman & Managing Director Chartered Accountants (DIN : 00280529) Firm Registration Number: 324982E / E300003 S. DUTTA\b Director & Chief Financial Officer Arvind Sethi (DIN : 01804345) Partner R. K. SINGHI\b Company Secretary (Membership No.: 89802) (Membership No.: FCS 3770) Kolkata, May 21, 2026 ITC Limited REPORT AND ACCOUNTS 2026 227",
+    "qualification": "Source-reported figures from the supplied document. These are not valuation estimates or independently corroborated financials."
+  }
+}

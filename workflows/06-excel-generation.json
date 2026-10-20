@@ -1,0 +1,66 @@
+{
+  "id": "a5181736f94d5bb0",
+  "name": "Finova 06 Excel generation",
+  "active": false,
+  "nodes": [
+    {
+      "id": "input",
+      "name": "Local input",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "50846e21-aacd-53bb-a219-4d5d4f634111",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "signalai-excel",
+        "responseMode": "lastNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "backend",
+      "name": "Finova bounded operation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        300,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8000/excel/exports",
+        "options": {
+          "timeout": 110000
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({company: $json.body.company}) }}"
+      }
+    }
+  ],
+  "connections": {
+    "Local input": {
+      "main": [
+        [
+          {
+            "node": "Finova bounded operation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "none",
+    "saveDataSuccessExecution": "none",
+    "saveExecutionProgress": false,
+    "executionTimeout": 120
+  },
+  "pinData": {},
+  "tags": []
+}

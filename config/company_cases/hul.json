@@ -1,0 +1,187 @@
+{
+  "as_of": "2026-10-19",
+  "market": {
+    "debt": 14780000000.0,
+    "cash": 25830000000.0,
+    "nci": 2690000000.0,
+    "preferred": 0.0,
+    "nonoperating_assets": 46220000000.0,
+    "price": 1893.8,
+    "price_date": "2026-10-16",
+    "valuation_date": "2026-10-19",
+    "current_shares": 2349591262,
+    "diluted_shares": 2349889491,
+    "shares_date": "2026-03-31",
+    "balance_date": "2026-03-31",
+    "accounting_scope": "consolidated",
+    "currency": "INR",
+    "other_senior_claims": 6180000000,
+    "interim_dividends": 51691007764,
+    "lease_policy": "Borrowings and lease liabilities deducted once, with post-Ind AS116 operating EBITDA. Renewal-lease capex requires review.",
+    "quote_source": "NSE India home market display,16-Oct-2026 close, accessed19-Oct-2026. https://www.nseindia.com/ . Not a live19-Oct quote."
+  },
+  "methods": [
+    {
+      "method": "DCF FCFF",
+      "applicable": "Yes",
+      "importance": "High",
+      "reason": "Conditional intrinsic cash-flow method using sourced statements and explicit company-specific scenarios.",
+      "weight": 0.7,
+      "weight_rationale": "Analyst reconciliation based on cash-flow visibility and company suitability; correlated methods are not independent proof."
+    },
+    {
+      "method": "FCFE",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: unstable financing or incomplete cash distribution policy prevents a reliable equity-cash-flow interpretation.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "Forward P/E",
+      "applicable": "Yes",
+      "importance": "Low",
+      "reason": "Analyst forward multiple stress cases, not peer-backed CCA. Zero reconciliation weight.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "EV/EBITDA",
+      "applicable": "Yes",
+      "importance": "Low",
+      "reason": "Analyst forward multiple stress cases, not peer-backed CCA. Zero reconciliation weight.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "EV/EBIT",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: inferior denominator or no suitable matched-period peers; correlated multiples add no independent evidence.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "EV/Sales",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: inferior denominator or no suitable matched-period peers; correlated multiples add no independent evidence.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "P/S",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: inferior denominator or no suitable matched-period peers; correlated multiples add no independent evidence.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "PEG",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: inferior denominator or no suitable matched-period peers; correlated multiples add no independent evidence.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "Precedent EV/Revenue",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: no verified matching transaction consideration, ownership, enterprise-value and financial denominator.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "Precedent EV/EBITDA",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: no verified matching transaction consideration, ownership, enterprise-value and financial denominator.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "DDM",
+      "applicable": "Yes",
+      "importance": "High",
+      "reason": "Secondary dividend-policy cross-check for a mature regular distributor; payout, timing and terminal returns remain estimates.",
+      "weight": 0.3,
+      "weight_rationale": "Analyst reconciliation based on cash-flow visibility and company suitability; correlated methods are not independent proof."
+    },
+    {
+      "method": "Residual income",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: historical OCI and equity adjustments have not been reconciled to clean surplus.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "NAV",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: no independently justified realizable asset values; book values omit brand economics.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "SOTP",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: segment forecasts, ownership-adjusted values or suitable evidence not sufficient for this method.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    }
+  ],
+  "revenue_route": "Volume and price/mix",
+  "margin_route": "EBITDA margin",
+  "direct_growth_rationale": "Q1 FY27 underlying volume grew 5% and sales 10%. Home care and beauty led growth while palm-cost pressure affected personal care. Forecast volume fades, pricing varies by scenario, and EBITDA margin is calibrated to 23.35% FY26 continuing operations.",
+  "drivers": [
+    {
+      "driver": "Q1 FY27 underlying volume grew 5% and sales 10%. Home care and beauty led growth while palm-cost pressure affected personal care. Forecast volume fades, pricing varies by scenario, and EBITDA margin is calibrated to 23.35% FY26 continuing operations.",
+      "source_type": "historical",
+      "confidence": "medium",
+      "source": "FY26 consolidated statements and latest result presentation"
+    }
+  ],
+  "research_notes": [
+    {
+      "topic": "Continuing earnings",
+      "finding": "FY26 total parent PAT includes ice-cream demerger effects. Use continuing parent PAT INR10633cr and operating EBITDA INR15054cr. The INR4611cr demerger gain is excluded from recurring forecasts.",
+      "source": "Annual report PDF419,445; annual result PDF8,12."
+    },
+    {
+      "topic": "Cash-flow comparability",
+      "finding": "Continuing CFO is reconciled as total CFO less signed discontinued CFO: FY26 INR10999cr - (-72cr) = INR11071cr; FY25 INR11886cr - 94cr = INR11792cr. Total FY26 cash capex INR1361cr is not asserted as continuing-only capex. Forecast capex remains an explicit 1.8%-2.8% sales judgment. Group cash dividends paid were INR10124cr/FY26 and INR12473cr/FY25; these are not continuing-segment allocations.",
+      "source": "FY2026 annual report PDF370-371,446; annual result PDF11."
+    },
+    {
+      "topic": "Acquisition claims",
+      "finding": "Deduct the INR618cr acquisition liability once. Other non-trade operating balances and pension settlement schedules are not fully projected. Core trade NWC is a narrow proxy.",
+      "source": "Annual report PDF407."
+    },
+    {
+      "topic": "Dividend method",
+      "finding": "Regular payout 91% in FY26 and 95% in FY25 supports a secondary multi-stage DDM. Forecast payout 85%-95%, with terminal payout constrained by sustainable ROE. Cash distributions are uniformly prorated, not an exact payment calendar.",
+      "source": "Annual report PDF419."
+    }
+  ],
+  "market_notes": [
+    "31-Mar-2026 balance and share basis rolled forward with estimated uniform interim FCFE, not a reported October balance.",
+    "Assume INR22 per share distribution after balance date. Payment timing is an explicit analyst case assumption, not independently confirmed bank settlement.",
+    "16-Oct close is the last dated reference used here. Latest intraday prices and later dilution are not asserted.",
+    "Other debt-like claims and nonoperating assets are carrying-value proxies. Minority buyout, pension and lease policies are described in Research."
+  ],
+  "issues": [
+    "Conditional analyst scenarios, not a precise fair-value recommendation. Capital costs, terminal returns, current cash bridge and multiples require analyst review.",
+    "Historical statements backfilled from 2022 where reporting periods exist. The Statement history schedule preserves as-reported scopes; only matching annual inputs feed the forecast.",
+    "No verified category-matched peer-forward estimate set or transaction database. Market multiples have zero reconciliation weight.",
+    "Native desktop Excel recalculation not verified. News checks may be incomplete and unverified headlines never change numerical forecasts automatically.",
+    "Continuing CFO reconciled using discontinued-operation disclosures. Continuing-only historical capex remains unavailable; net investing cash flow is not substituted for capex."
+  ],
+  "historical_model_basis": [
+    "consolidated",
+    "continuing"
+  ]
+}

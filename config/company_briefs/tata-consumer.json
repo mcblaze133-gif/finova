@@ -1,0 +1,42 @@
+{
+  "investor_summary": "The supplied June-quarter presentation reports volume growth and stronger EBITDA, while tea pricing pass-through reduces tea revenue. A completed valuation still requires validated financial schedules and company-specific assumptions.",
+  "findings": [
+    {
+      "title": "Tea revenue decline is not the same as volume decline",
+      "finding": "The supplied presentation reports India tea volume growth of 2% and a revenue decline of 4%, attributing the difference to passing lower tea costs to consumers. Growth businesses grew 47% and reached 36% of the India business.",
+      "investor_use": "Separate pricing pass-through, volumes and business mix before forecasting growth or margins. Applying one growth assumption across all businesses would conceal these differences."
+    }
+  ],
+  "reported_results": {
+    "period": "Quarter ended 30 June 2026",
+    "scope": "Consolidated presentation; individual business metrics labelled",
+    "metrics": [
+      {
+        "label": "Consolidated revenue growth",
+        "display_value": "12%",
+        "source_value": "Consolidated revenue grew 12%"
+      },
+      {
+        "label": "Consolidated EBITDA growth",
+        "display_value": "19%",
+        "source_value": "Consolidated EBITDA grew 19%"
+      },
+      {
+        "label": "Consolidated EBITDA margin",
+        "display_value": "13.6%",
+        "source_value": "13.6%"
+      },
+      {
+        "label": "India business volume growth",
+        "display_value": "13%",
+        "source_value": "13% underlying volume growth"
+      }
+    ],
+    "source_file": "tata consumer/analyst presentation/Q1FY27 Investor Presentation FINAL.pdf",
+    "source_sha256": "9971477129f8b9ebcc3a64d95e5f862aa6134b83255072374ae67d88f992e6ee",
+    "source_page": 5,
+    "source_document_id": 159,
+    "source_quote": "Executive Summary Consolidated revenue grew 12%, International business1 grew 16% with the India business delivering (3% in constant currency terms), 13% underlying volume growth. with the US business delivering 7% constant currency growth. India Tea volumes grew 2%, Non-branded business declined 7% revenue declined 4% as the benefit (10% in constant currency terms) as of lower tea cost was passed on to a sharp fall in global coffee prices consumers. impacted realizations. Salt delivered 7% revenue growth, Consolidated EBITDA grew 19%, ` led by 7% volume growth. with margins expanding 70 bps YoY to 13.6%. ‘Growth businesses’ grew 47% YoY 14 new products were launched and scaled to 36% of the India during the quarter, with a strong business. innovation pipeline in place for the rest of the year. ❖ Tata Sampann +58% ❖ RTD revenue +41% Tata Starbucks’ revenue grew ❖ Capital Foods and Organic India 11% YoY with a healthy same- +35% combined. store sales growth. 1Does not include the export revenues of Capital Foods and Organic India. Investor Presentation | July 2026 5",
+    "qualification": "Source-reported figures from the supplied document. These are not valuation estimates or independently corroborated financials."
+  }
+}

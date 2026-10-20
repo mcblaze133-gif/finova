@@ -1,0 +1,42 @@
+{
+  "investor_summary": "Selected annual financial results are available from the supplied consolidated statement. Peer normalisation, valuation assumptions and the company-specific Excel model are still incomplete.",
+  "findings": [
+    {
+      "title": "Use operating earnings and attributable profit consistently",
+      "finding": "The supplied annual statement reports EBITDA of ₹53,060.6 million and profit for the year of ₹34,990.8 million. Its EBITDA definition and associate results are shown separately in the statement.",
+      "investor_use": "Use the disclosed EBITDA definition consistently across peers. An earnings multiple and an enterprise-value multiple require different earnings and balance-sheet bridges."
+    }
+  ],
+  "reported_results": {
+    "period": "Year ended 31 March 2026",
+    "scope": "Consolidated; amounts in INR million as reported",
+    "metrics": [
+      {
+        "label": "Revenue from operations",
+        "display_value": "₹231,546.0 million",
+        "source_value": "231,546.0"
+      },
+      {
+        "label": "Reported EBITDA",
+        "display_value": "₹53,060.6 million",
+        "source_value": "53,060.6"
+      },
+      {
+        "label": "Profit for the year",
+        "display_value": "₹34,990.8 million",
+        "source_value": "34,990.8"
+      },
+      {
+        "label": "Basic and diluted EPS",
+        "display_value": "₹18.15",
+        "source_value": "18.15"
+      }
+    ],
+    "source_file": "nestle/reports/Nestle India_AR FY 2025-26.pdf",
+    "source_sha256": "f534064741ac51dde47a09fea23277d6498b536a00d146fc99ea6e51abcbeecc",
+    "source_page": 118,
+    "source_document_id": 136,
+    "source_quote": "143 CONSOLIDATED STATEMENT OF PROFIT AND LOSS FOR THE YEAR ENDED 31st MARCH, 2026 (All amounts in J million, unless otherwise stated) Particulars Notes Financial Year ended Financial Year ended 31st March, 2026 31st March, 2025 A INCOME Sale of products 24 230,714.6 200,775.0 Other operating revenue 24 831.4 1,240.6 i Revenue from Operations 231,546.0 202,015.6 ii Other income 25 403.5 629.9 Total Income 231,949.5 202,645.5 B EXPENSES i Cost of materials consumed 26 98,140.4 83,901.5 ii Purchases of stock-in-trade 6,954.8 4,993.1 iii Changes in inventories of finished goods, work-in-progress and stock-in-trade 27 (1,682.3) (1,396.6) iv Employee benefits expense 28 21,658.1 20,275.4 v Finance costs 29 1,583.1 1,360.0 vi Depreciation and amortisation expense 30 6,992.3 5,399.2 vii Other expenses 31 53,414.4 46,546.4 Total Expenses 187,060.8 161,079.0 C PROFIT BEFORE SHARE OF (PROFIT) / LOSS OF AN ASSOCIATE, 44,888.7 41,566.5 EXCEPTIONAL ITEMS AND TAX (A-B) D Share of (profit) / loss of associate accounted for using the equity method (net of tax) 455.2 239.5 E PROFIT BEFORE EXCEPTIONAL ITEMS AND TAX (C-D) 44,433.5 41,327.0 F Exceptional items [charge / (credit)] 4, 32 (1,207.8) (1,834.2) G PROFIT BEFORE TAX (E-F) 45,641.3 43,161.2 H Tax expense Current tax 36 10,312.8 10,951.8 Deferred tax 36 337.7 133.5 I PROFIT FOR THE YEAR (G-H) 34,990.8 32,075.9 J OTHER COMPREHENSIVE INCOME (a) (i) Items that will not be reclassified to profit or loss: Re-measurement gains / (losses) of defined benefit plans 32 (482.1) (1,076.7) Share of other comprehensive income of associate accounted for using the 1.9 (0.3) equity method (net of tax) (ii) Income taxes relating to Items that will not be reclassified to profit or loss 121.3 271.0 (358.9) (806.0) (b) (i) Items that will be reclassified to profit or loss: Net movement on effective portion of cash flow hedges (32.6) 12.4 (ii) Income taxes relating to Items that will be reclassified to profit or loss 8.2 (3.1) (24.4) 9.3 OTHER COMPREHENSIVE INCOME, NET OF TAX (a+b) (383.3) (796.7) K TOTAL COMPREHENSIVE INCOME (I+J) 34,607.5 31,279.2 EARNINGS PER EQUITY SHARE Basic and diluted earnings per share (Face value ₹ 1 - refer Note 16) H 18.15 16.63 Additional Information [refer Note 2 (g)]: Earnings before Interest, Tax, Depreciation and Amortisation [EBITDA] - [C - A(ii) + B(v) + B(vi)] 53,060.6 47,695.8 See accompanying notes 1 to 49 forming part of the consolidated financial statements As per our report of even date attached For and on behalf of the Board of Directors For S.R. Batliboi & Co. LLP Chartered Accountants Firm’s Registration No. - 301003E/E300005 PANKAJ CHADHA MANISH TIWARY EDOUARD DOMINIQUE JEAN MAC NAB Partner Chairman and Managing Director Executive Director - Finance & Control and CFO Membership No.- 091813 (DIN - 02572830) (DIN - 11511070) PRAMOD KUMAR RAI Company Secretary Membership No. - FCS 4676 (PAN - ABVPR5131P) 21st April 2026 21st April 2026 Gurugram Gurugram",
+    "qualification": "Source-reported figures from the supplied document. These are not valuation estimates or independently corroborated financials."
+  }
+}

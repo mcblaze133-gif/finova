@@ -1,0 +1,250 @@
+{
+  "as_of": "2026-10-18",
+  "revenue_route": "Volume and price/mix",
+  "margin_route": "EBITDA margin",
+  "methods": [
+    {
+      "method": "DCF FCFF",
+      "applicable": "Yes",
+      "importance": "High",
+      "reason": "Primary conditional intrinsic method: sourced operating history and explicit scenario assumptions; rate and interim cash bridge remain estimates.",
+      "weight": 1,
+      "weight_rationale": "Only the conditional operating DCF has an independently specified cash-flow basis; no false diversification across market-anchored multiples."
+    },
+    {
+      "method": "FCFE",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: historical borrowing changes and interim financing policy not established; no-borrowing bridge assumption is insufficient to validate FCFE.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated cross-check; zero weight."
+    },
+    {
+      "method": "Forward P/E",
+      "applicable": "Yes",
+      "importance": "Low",
+      "reason": "Secondary analyst-multiple stress test only; no independent peer validation and no reconciliation weight.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated cross-check; zero weight."
+    },
+    {
+      "method": "EV/EBITDA",
+      "applicable": "Yes",
+      "importance": "Low",
+      "reason": "Secondary analyst-multiple stress test only; no independent peer validation and no reconciliation weight.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated cross-check; zero weight."
+    },
+    {
+      "method": "EV/EBIT",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: no verified comparable transactions/peers, or profitability makes this denominator an inferior primary measure.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated cross-check; zero weight."
+    },
+    {
+      "method": "EV/Sales",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: no verified comparable transactions/peers, or profitability makes this denominator an inferior primary measure.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated cross-check; zero weight."
+    },
+    {
+      "method": "P/S",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: no verified comparable transactions/peers, or profitability makes this denominator an inferior primary measure.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated cross-check; zero weight."
+    },
+    {
+      "method": "PEG",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: no verified comparable transactions/peers, or profitability makes this denominator an inferior primary measure.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated cross-check; zero weight."
+    },
+    {
+      "method": "Precedent EV/Revenue",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: no verified comparable transactions/peers, or profitability makes this denominator an inferior primary measure.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated cross-check; zero weight."
+    },
+    {
+      "method": "Precedent EV/EBITDA",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: no verified comparable transactions/peers, or profitability makes this denominator an inferior primary measure.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated cross-check; zero weight."
+    },
+    {
+      "method": "DDM",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded from this run: stable mature dividends may support DDM, but payment dates and first-year cash-dividend timing require a reconciled schedule.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated cross-check; zero weight."
+    },
+    {
+      "method": "Residual income",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: OCI and balance-date roll-forward need clean-surplus reconciliation; do not present zero assumed OCI as a historical fact.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated cross-check; zero weight."
+    },
+    {
+      "method": "NAV",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: book assets omit internally generated brand/distribution economics and independently realizable values are absent.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated cross-check; zero weight."
+    },
+    {
+      "method": "SOTP",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: audited group is reported as one Foods operating segment; reliable separate segment earnings/valuations are absent.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated cross-check; zero weight."
+    }
+  ],
+  "market": {
+    "price_date": "2026-10-16",
+    "price": 4764,
+    "current_shares": 240868296,
+    "diluted_shares": 240868296,
+    "debt": 13802800000,
+    "cash": 2200000000,
+    "nci": 293200000,
+    "preferred": 0,
+    "nonoperating_assets": 37276600000,
+    "quote_source": "NSE indexed quote BRITANNIA INR4764; cross-check ET historical close 16-Oct-2026. Live quote delivery incomplete.",
+    "shares_date": "2026-03-31",
+    "balance_date": "2026-03-31",
+    "accounting_scope": "consolidated",
+    "currency": "INR",
+    "lease_policy": "Gross debt includes INR22.45cr lease liabilities; reported EBITDA is post-Ind AS116. No separate double deduction of leases.",
+    "valuation_date": "2026-10-16",
+    "interim_dividends": 21798580788
+  },
+  "market_notes": [
+    "All balance inputs start at 31-Mar-2026, not an asserted October balance. Each scenario estimates the interim equity-cash bridge.",
+    "INR90.50/share distribution after balance date is deducted in full. Paid status is an explicit case assumption based on the announced distribution/ex-date; bank settlement was not verified.",
+    "Carrying values proxy the non-operating portfolio and minority claims. Quotes, share count and balance dates differ and require refresh.",
+    "First forecast-year cash flows accrue uniformly. This estimated timing bridge does not replace reported interim cash flow; all three scenarios expose it."
+  ],
+  "research_notes": [
+    {
+      "topic": "Profit normalization",
+      "finding": "Reported FY26 parent PAT INR2533.49cr rose 16.3%. Net prior-year tax adjustments reduced tax expense by INR82.10cr; removing that item gives approximately INR2451.39cr and about 12.5% profit growth. The gross favorable-order reversal of INR95.39cr is a different disclosure. Do not subtract both.",
+      "source": "FY26 annual report PDF pp132 and146, Note19(c)."
+    },
+    {
+      "topic": "Historical one-off",
+      "finding": "FY23 exceptional income INR375.60cr relates to the dairy/Bel transaction. Reported FY23 EPS is not a clean recurring baseline; neither that gain nor the subsequent PAT decline should be extrapolated mechanically.",
+      "source": "FY23 report PDF p114; NSE corporate filing 5-May-2023."
+    },
+    {
+      "topic": "Demand and pricing",
+      "finding": "Q1 FY27 net sales INR4964cr, +9.5%; management confirmed 9% tonnage growth. Exact implied price/mix on these rounded figures is about 0.46%, not 0.5% as an additive identity. This net-sales basis is not identical to audited revenue from operations.",
+      "source": "Q1 FY27 deck PDF pp18-19; 7-Aug-2026 transcript PDF p15."
+    },
+    {
+      "topic": "Margin risk",
+      "finding": "General trade recovered and adjacencies grew faster, but fuel, laminates and advertising spending constrain margins. Management said pricing had mitigated only part of inflation. A smooth margin expansion is a forecast assumption.",
+      "source": "7-Aug-2026 transcript PDF pp5-8; Q1 deck pp16-19."
+    },
+    {
+      "topic": "Cash generation",
+      "finding": "FY26 operating cash flow INR2611.60cr and gross cash capex INR205.57cr. CFO less capex INR2406.03cr is not identical to FCFF: interest, tax, working-capital and non-operating classifications differ. The 1.07% capex/revenue ratio is not extrapolated forever.",
+      "source": "FY26 report PDF pp133-134."
+    },
+    {
+      "topic": "Negative working capital",
+      "finding": "Core trade NWC was negative INR81.27cr. Supplier funding supports cash conversion, but incentives receivable, other operating assets/liabilities and provisions remain outside this narrow proxy. Their future net changes are assumed neutral.",
+      "source": "FY26 report PDF p132 and146."
+    },
+    {
+      "topic": "Non-operating value",
+      "finding": "Financial investments, loans, associates/JV and investment property are added once at INR3727.66cr carrying-value proxy; this is not a fair-value appraisal. Interest/JV results are excluded from operating EBIT to avoid double counting.",
+      "source": "FY26 report PDF pp132,144-146."
+    },
+    {
+      "topic": "Valuation-date estimate",
+      "finding": "The model date is 16-Oct-2026. It prorates first-year cash flows uniformly, rolls the 31-Mar-2026 bridge using estimated interim FCFE, and deducts the INR90.50/share distribution as an explicit paid/distribution assumption. No September balance sheet is asserted.",
+      "source": "Market timing/bridge inputs; annual report dividend recommendation and NSE ex-date 31-Jul-2026."
+    },
+    {
+      "topic": "Discount rate",
+      "finding": "The nominal-INR risk-free proxy, beta and equity premium are analyst assumptions. They are not a verified same-day CAPM estimate. These are major valuation sensitivities and keep confidence low.",
+      "source": "Assumption register. Official current yield / regression-beta validation incomplete."
+    },
+    {
+      "topic": "Triangulation limitation",
+      "finding": "P/E and EV/EBITDA outputs are multiple stress cases with zero weighting because no independently verified peer set was supplied. The final weighted row equals DCF deliberately; it is not a corroborated multi-method fair value.",
+      "source": "Methods and Multiple policy."
+    },
+    {
+      "topic": "Latest update scope",
+      "finding": "The local corpus and official online checks include the Q1 FY27 call and FY26 audited filing. No Q2 FY27 financial results were established during this run. An absence in these checks does not establish that no later announcement exists.",
+      "source": "Official company investor page, NSE FY26 integrated filing, and 7-Aug-2026 call."
+    }
+  ],
+  "issues": [
+    "Conditional analyst scenarios: capital costs, terminal returns and multiple ranges are estimates, not independently verified market facts.",
+    "Current cash/debt bridge estimated from March balances; uniform interim cash accrual and distribution timing require review.",
+    "No peer-backed CCA, transaction valuation, or native desktop Excel verification."
+  ],
+  "drivers": [
+    {
+      "driver": "Tonnage and volume growth",
+      "source_type": "historical",
+      "confidence": "medium",
+      "source": "7-Aug-2026 call PDF p15: 9% tonnage growth, not pack-count growth."
+    },
+    {
+      "driver": "Pricing versus commodity inflation",
+      "source_type": "historical",
+      "confidence": "medium",
+      "source": "7-Aug-2026 call PDF pp5-8: fuel/laminate costs and partial price recovery."
+    },
+    {
+      "driver": "General trade and e-commerce",
+      "source_type": "historical",
+      "confidence": "medium",
+      "source": "Q1 FY27 deck PDF p7: general trade recovery and faster other channels."
+    },
+    {
+      "driver": "Adjacencies and innovation",
+      "source_type": "historical",
+      "confidence": "medium",
+      "source": "7-Aug-2026 call PDF p4: croissant, dairy and other product growth."
+    },
+    {
+      "driver": "Advertising investment",
+      "source_type": "management_guidance",
+      "confidence": "medium",
+      "source": "7-Aug-2026 call PDF pp6-8: sustained brand investment and margin implications."
+    },
+    {
+      "driver": "Supplier-funded core trade cycle",
+      "source_type": "historical",
+      "confidence": "medium",
+      "source": "FY26 report PDF p132: inventory, receivables and trade payables."
+    },
+    {
+      "driver": "Capacity and cash capex",
+      "source_type": "historical",
+      "confidence": "medium",
+      "source": "FY23-26 consolidated cash-flow statements; FY26 report PDF p133."
+    }
+  ]
+}

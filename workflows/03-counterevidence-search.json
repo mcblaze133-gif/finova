@@ -1,0 +1,76 @@
+{
+  "id": "d05b4da499fa55ff",
+  "name": "Finova 03 Counterevidence search",
+  "active": false,
+  "nodes": [
+    {
+      "id": "input",
+      "name": "Local input",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "125f336a-10f4-54eb-913a-3a69be1c5248",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "signalai-counterevidence",
+        "responseMode": "lastNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "backend",
+      "name": "Finova bounded operation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        300,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "http://127.0.0.1:8000/search",
+        "options": {
+          "timeout": 110000
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "company",
+              "value": "={{ $json.body.company }}"
+            },
+            {
+              "name": "query",
+              "value": "={{ $json.body.query || \"acquisition demerger discontinued restated seasonality exceptional lease inventory\" }}"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Local input": {
+      "main": [
+        [
+          {
+            "node": "Finova bounded operation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "none",
+    "saveDataSuccessExecution": "none",
+    "saveExecutionProgress": false,
+    "executionTimeout": 120
+  },
+  "pinData": {},
+  "tags": []
+}

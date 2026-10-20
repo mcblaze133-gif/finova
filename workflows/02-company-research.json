@@ -1,0 +1,66 @@
+{
+  "id": "a4d993562eae5327",
+  "name": "Finova 02 Company research",
+  "active": false,
+  "nodes": [
+    {
+      "id": "input",
+      "name": "Local input",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "ca68cce0-25ef-5488-9a34-2afd1e363690",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "signalai-research",
+        "responseMode": "lastNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "backend",
+      "name": "Finova bounded operation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        300,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8000/runs",
+        "options": {
+          "timeout": 110000
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({company: $json.body.company, refresh: $json.body.refresh !== false}) }}"
+      }
+    }
+  ],
+  "connections": {
+    "Local input": {
+      "main": [
+        [
+          {
+            "node": "Finova bounded operation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "none",
+    "saveDataSuccessExecution": "none",
+    "saveExecutionProgress": false,
+    "executionTimeout": 120
+  },
+  "pinData": {},
+  "tags": []
+}

@@ -1,0 +1,66 @@
+{
+  "id": "0c1a91f033bc5af0",
+  "name": "Finova 01 Document ingestion",
+  "active": false,
+  "nodes": [
+    {
+      "id": "input",
+      "name": "Local input",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "2bb808c9-4f24-5899-9ea1-2dc4890c1d90",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "signalai-ingest",
+        "responseMode": "lastNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "backend",
+      "name": "Finova bounded operation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        300,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8000/documents",
+        "options": {
+          "timeout": 110000
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({company: $json.body.company, url: $json.body.url, title: $json.body.title || \"Public disclosure\", publication_date: $json.body.publication_date || null}) }}"
+      }
+    }
+  ],
+  "connections": {
+    "Local input": {
+      "main": [
+        [
+          {
+            "node": "Finova bounded operation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "none",
+    "saveDataSuccessExecution": "none",
+    "saveExecutionProgress": false,
+    "executionTimeout": 120
+  },
+  "pinData": {},
+  "tags": []
+}

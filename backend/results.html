@@ -1,0 +1,328 @@
+<!doctype html>
+
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Finova · Company valuation and outlook</title>
+
+<style>@media(max-width:400px){.table-scroll th,.table-scroll td{padding:9px 4px}.table-scroll th:first-child,.table-scroll td:first-child{min-width:95px}}</style>
+
+<style>.statement-history th{white-space:normal;min-width:145px}.statement-history th small{font-size:12px}.statement-history td:first-child{min-width:230px}</style>
+
+<style>
+
+:root{--ink:#172f48;--muted:#5b6b78;--line:#dce4e8;--accent:#12695c}*{box-sizing:border-box}body{margin:0;background:#f4f6f7;color:var(--ink);font:16px/1.6 system-ui,sans-serif}main{max-width:1120px;margin:auto;padding:30px 24px}header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:18px}header strong{font-size:28px;letter-spacing:-1px}h1{font-size:30px;line-height:1.25;margin:28px 0 8px}h2{font-size:21px;margin:0 0 14px}h3{font-size:17px;margin:0 0 7px}p{margin:8px 0 14px}.muted,small{color:var(--muted)}.card{background:white;border:1px solid var(--line);border-radius:10px;padding:24px;margin:20px 0}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.finding{padding:20px;border-left:3px solid #8fb6aa;background:#fafcfc}.finding p:last-child{margin-bottom:0}.toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}select,button,.button{font:inherit;border:1px solid #bacac5;border-radius:6px;padding:10px 14px}select{max-width:100%;background:white;color:var(--ink)}button,.button{cursor:pointer;background:var(--accent);color:white;text-decoration:none}button.secondary{background:white;color:var(--accent)}button:disabled{opacity:.5;cursor:wait}a{color:var(--accent)}.table-scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:15px}th,td{text-align:right;border-bottom:1px solid var(--line);padding:13px 12px;white-space:nowrap}th:first-child,td:first-child{text-align:left;white-space:normal;min-width:180px}th{background:#edf3f6;color:var(--ink)}.primary{font-weight:650}.reference{display:flex;align-items:baseline;justify-content:space-between;gap:20px;padding:14px 0}.reference strong{font-size:24px}.notice{border-left:3px solid #c49a40;padding:10px 15px;background:#fff9ed;font-size:14px}.news-item{padding:18px 0;border-top:1px solid var(--line)}.news-item:first-child{border-top:0}.news-label{color:#866528;font-size:13px}.news-item a{font-size:14px;display:block;overflow-wrap:anywhere}.empty{padding:30px 0;color:var(--muted)}#message{min-height:26px;margin:10px 0 0;font-size:14px}footer{padding:20px 0;color:var(--muted);font-size:13px}[hidden]{display:none!important}@media(max-width:760px){main{padding:22px 16px}.grid{grid-template-columns:1fr}.card{padding:20px}h1{font-size:25px}header{align-items:baseline;gap:14px}.reference{display:block}.toolbar{gap:9px}button,.button{padding:9px 12px}th,td{padding:10px;font-size:14px}}@media print{.toolbar,header small,#message{display:none}.card{break-inside:avoid}body{background:white}}
+
+</style><style>.button.secondary{background:white;color:var(--accent)}.document-stats{display:flex;gap:28px;flex-wrap:wrap;margin:10px 0 18px}.document-stats strong{display:block;font-size:24px}.document-stats span{font-size:14px;color:var(--muted)}details{margin-top:16px}summary{cursor:pointer;color:var(--accent)}.file-list{font-size:14px;overflow-wrap:anywhere;padding-left:22px}@media(max-width:760px){th:first-child,td:first-child{min-width:110px}th,td{padding:10px 7px;font-size:13px}.reference strong{display:block;margin-top:6px}.document-stats{gap:20px}.document-stats strong{font-size:22px}}.interpretation{border-left:2px solid #b7ccc5;padding:2px 12px;margin:14px 0;font-size:14px;color:var(--muted)}.interpretation p{margin:6px 0}.interpretation strong{color:var(--ink)}</style><style>.scenario-values{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0}.scenario-values>div{padding:12px;background:#edf3f6;border-radius:6px}.scenario-values strong{font-size:22px}.scenario-values h3{font-size:14px}</style></head><body><main>
+
+<header><strong>Finova<span style="color:#12695c">.</span></strong><small>Company valuation and outlook</small></header>
+
+<h1 id="company-title">Company report</h1><p class="muted">Financial findings, valuation estimates and what to watch.</p>
+
+<div class="toolbar"><label for="company">Company</label><select id="company" aria-label="Company"></select><button id="investigate">Generate research report</button><button id="refresh" class="secondary" hidden>Refresh news and evidence</button><button id="revalue" class="secondary" hidden>Update valuations</button><a id="view-valuation" class="button secondary" href="#valuation-results" hidden>View valuations</a><a id="download" class="button" hidden>Download Excel report</a></div>
+
+<p id="message" role="status" aria-live="polite"></p>
+
+<div id="results" aria-live="polite"></div>
+
+<footer>Scenario estimates are conditional and are not a buy or sell recommendation.</footer>
+
+</main><script>
+
+const $=id=>document.getElementById(id);
+
+const el=(tag,text,cls)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;if(cls)node.className=cls;return node};
+
+let loadVersion=0,freshBusy=false;
+
+function setFreshBusy(value){freshBusy=value;for(const id of ['investigate','refresh','revalue'])$(id).disabled=value;}
+
+const money=value=>typeof value==='number'&&Number.isFinite(value)?new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(value):'Not available';
+
+const timeLabel=value=>value?new Date(value).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'medium',timeZone:'Asia/Kolkata'}):'Not checked';
+
+const dateLabel=value=>value?new Date(value.length===10?value+'T00:00:00+05:30':value).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric',timeZone:'Asia/Kolkata'}):'Date unavailable';
+
+async function api(path,body,options={}){const response=await fetch(path,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:options.signal}:{cache:'no-store',signal:options.signal});if(!response.ok){let detail;try{detail=(await response.json()).detail}catch{}const error=Error(typeof detail==='string'?detail:detail?.message||'The report could not be updated. Previously saved results remain available.');error.status=response.status;throw error}return response.json()}
+
+function section(title){const box=el('section',undefined,'card');if(title==='Valuation results')box.id='valuation-results';box.append(el('h2',title));$('results').append(box);return box}
+
+function renderHistory(h,workbook=null){
+
+ if(!h?.periods?.length)return;
+
+ const box=section('Financial statement history');box.id='statement-history';box.append(el('p',h.qualification,'muted'));
+
+ const wrap=el('div',undefined,'table-scroll'),table=el('table'),head=el('thead'),tr=el('tr');table.className='statement-history';tr.append(el('th','Reported measure'));
+
+ for(const p of h.periods){const th=el('th');th.append(el('div',p.label),el('small',p.scope),el('div',p.duration_days+' days'));tr.append(th)}head.append(tr);table.append(head);
+
+ const body=el('tbody');for(const m of h.metrics){if(!h.periods.some(p=>typeof p.values[m.id]==='number'))continue;const row=el('tr');row.append(el('td',m.label+(m.id==='shares'?' (actual)':' (₹ cr)')));for(const p of h.periods){const cell=el('td'),v=p.values[m.id],text=typeof v==='number'?new Intl.NumberFormat('en-IN',{maximumFractionDigits:m.id==='shares'?0:1}).format(m.id==='shares'?v:v/10000000):'Not available',source=p.sources[m.id]?.[0];if(source?.url){const a=el('a',text);a.href=source.url;a.target='_blank';a.rel='noopener noreferrer';a.title=source.definition+' · PDF page '+source.pages;cell.append(a)}else cell.textContent=text;row.append(cell)}body.append(row)}table.append(body);wrap.append(table);box.append(wrap);
+
+ explain(box,'These are reported income-statement, balance-sheet and cash-flow figures for the dates and scopes shown.',h.investor_use);
+
+ for(const p of h.periods)if(p.duration_days>400)box.append(el('p',p.label+': '+p.qualification,'notice'));
+
+ const scopes=new Set(h.periods.map(p=>p.scope));if(scopes.size>1)box.append(el('p','Reporting scopes change within this history. Pre-demerger total operations and standalone figures are not directly comparable with current continuing or consolidated figures.','notice'));
+
+ for(const issue of h.issues)box.append(el('p',issue,'notice'));
+
+ if(workbook){const a=el('a','Download dated Excel valuation and statement history');a.href=workbook.url;box.append(a,el('p','Workbook prepared '+timeLabel(workbook.created_at)+'. Choose Investigate company for a new findings and news assessment.','muted'));}
+
+}
+
+function sourceStatement(parent,item){if(!item)return;parent.append(el('p',item.text.replace(/\bH(?=\d)/g,'₹')));for(const source of item.citations||[]){const detail=el('details'),heading=el('summary',source.title+' · PDF/document page '+source.page),quote=el('blockquote',source.quote);detail.append(heading,quote);const link=el('a','Open archived original');link.href=source.url;link.target='_blank';link.rel='noopener noreferrer';detail.append(link);try{const u=new URL(source.original_url);if(u.protocol==='https:'){const original=el('a',' · Publisher source');original.href=u.href;original.target='_blank';original.rel='noopener noreferrer';detail.append(original)}}catch{}parent.append(detail)}}
+
+function explain(parent,meaning,use){const box=el('div',undefined,'interpretation');for(const [label,text] of [['What it means',meaning],['How to use it',use]]){if(!text)continue;const line=el('p');line.append(el('strong',label+': '),el('span',text));box.append(line)}parent.append(box)}
+
+function metricMeaning(label){
+
+ if(/EPS/i.test(label))return ['Profit attributable to each share under the reported earnings definition. Diluted EPS also reflects potential share dilution.','Compare the same earnings period and business scope before using EPS in a P/E valuation.'];
+
+ if(/revenue|sales/i.test(label))return ['The reported value of business sales; this is not profit or cash collected. Check whether taxes such as excise are included.','Compare like-for-like periods and business scope, then check whether sales growth also produces profit and cash.'];
+
+ if(/parent.attributable/i.test(label))return ['The portion of reported profit attributable to the parent company’s shareholders, after allocating non-controlling interests.','Use the appropriate continuing or total earnings figure consistently when deriving per-share earnings.'];
+
+ if(/profit|PAT|income/i.test(label))return ['Accounting earnings for the stated business scope. Continuing-operations profit excludes discontinued businesses.','Check exceptional items and cash conversion before treating reported earnings as sustainable forecast earnings.'];
+
+ if(/cash/i.test(label))return ['A reported cash measure whose meaning depends on the stated cash-flow category and period.','Reconcile operating cash generation, investment and financing before using it in a cash-flow forecast.'];
+
+ return ['A reported financial measure for the period and accounting scope shown.','Check its definition and source before comparing companies or feeding it into a forecast.'];
+
+}
+
+function valuationMeaning(method){
+
+ if(/DCF|FCFF/i.test(method))return ['The present value of forecast operating cash flows, bridged from enterprise value to equity value per share.','Stress-test growth, margins, reinvestment, WACC and terminal growth before comparing this estimate with the dated market price.'];
+
+ if(/FCFE/i.test(method))return ['The present value of forecast cash available to equity holders after reinvestment and net borrowing.','Check debt-policy assumptions and the cost of equity; compare with FCFF to investigate differences.'];
+
+ if(/P\/E/i.test(method))return ['Forecast earnings per share multiplied by the selected earnings multiple.','Check earnings quality, consistent forecast periods and peer support for the multiple. A stress multiple is illustrative, not peer-validated.'];
+
+ if(/EV\/EBITDA/i.test(method))return ['A selected multiple of operating earnings before depreciation, followed by the enterprise-to-equity bridge and share-count conversion.','Check normalized EBITDA, debt, cash, other claims and peer comparability. The assumed multiple can materially change the result.'];
+
+ if(/DDM/i.test(method))return ['The present value of forecast dividends paid to shareholders.','Check whether payout assumptions represent sustainable cash generation and whether dividend policy is stable.'];
+
+ if(/SOTP/i.test(method))return ['A sum of separately valued businesses, adjusted for central costs, debt and other relevant claims.','Check each segment’s valuation method and avoid counting debt or liabilities twice.'];
+
+ return ['A conditional equity-value estimate produced by the stated valuation method.','Review its assumptions, supporting inputs and limitations before relying on it.'];
+
+}
+
+function explainNews(parent,finding){
+
+ const drivers={ebitda_margin:'the operating profit retained from each rupee of sales before depreciation',volume_growth:'the quantity sold',price_mix_growth:'revenue earned per unit through pricing and product mix',direct_revenue_growth:'the pace of sales growth',gross_margin:'sales remaining after direct product costs',capex_ratio:'cash reinvestment in long-term assets',working_capital_ratio:'cash tied up in day-to-day operations',wacc:'the discount rate applied to operating cash flows'};
+
+ const affected=(finding.drivers||[]).map(d=>drivers[d]||d.replaceAll('_',' '));
+
+ const direction={negative:'The assessed effect is adverse if the reported exposure holds.',positive:'The assessed effect is favorable if the reported exposure holds.',mixed:'The assessed effect contains both favorable and adverse channels.',uncertain:'The direction of the financial effect is uncertain.'}[finding.direction]||'The financial effect has not been established.';
+
+ explain(parent,(affected.length?'This could affect '+affected.join('; ')+'. ':'')+direction,
+
+ 'Treat this as a scenario to test, not an automatic forecast change. '+(finding.review_action||'Verify the original source and the company’s exposure before changing assumptions.')+' No numerical valuation adjustment is established by this update alone.');
+
+}
+
+function renderInvestigation(report){
+
+ const box=section('Research findings'),r=report.investigation;
+
+ if(!r){box.append(el('p','No completed research finding is available.','notice'));return}
+
+ box.append(el('p','As of '+dateLabel(r.checked_at),'muted'));
+
+ for(const gap of r.financial_data_gaps||[])box.append(el('p',gap,'notice'));
+
+ box.append(el('h3',r.discovery?'The discovery':'Preliminary finding'));
+
+ sourceStatement(box,r.discovery||r.candidate);
+
+ if(!r.discovery&&!r.candidate){box.append(el('p','The available evidence does not support a defensible discovery.','notice'));return}
+
+ if(!r.discovery)box.append(el('p','Evidence is insufficient to treat this finding as established.','notice'));
+
+ box.append(el('h3','Why it matters'));
+
+ for(const item of r.significance||[])sourceStatement(box,item);
+
+ box.append(el('h3','Evidence and timeline'));
+
+ if(!r.timeline?.length)box.append(el('p','A dated evidence trail has not been established.'));
+
+ for(const item of r.timeline||[]){box.append(el('strong',dateLabel(item.date)));sourceStatement(box,item)}
+
+ box.append(el('h3','Supporting numbers'));
+
+ if(!r.calculations?.length)box.append(el('p','No verified calculation supports this finding yet.'));
+
+ for(const c of r.calculations||[]){sourceStatement(box,{text:c.formula.replaceAll('_',' ')+': '+new Intl.NumberFormat('en-IN',{maximumFractionDigits:4}).format(Number(c.value))+' '+c.unit,citations:c.citations});if(c.periods?.length)box.append(el('p','Calculation periods: '+c.periods.map(p=>dateLabel(p.start)+' to '+dateLabel(p.end)+' · '+p.accounting_scope+' · '+p.operations_scope).join(' versus '),'muted'));}
+
+ box.append(el('h3','Strongest counterargument'));
+
+ if(r.counterargument)sourceStatement(box,r.counterargument);else box.append(el('p','A supported alternative explanation is not yet available.'));
+
+ box.append(el('h3','Falsification condition'),el('p',r.falsification_condition||'The evidence does not yet establish a testable condition.'));
+
+ box.append(el('h3','Evidence strength: '+(r.evidence_strength?.rating||'Weak')));
+
+ const reasons=el('ul');
+
+ const labels={
+
+  'The analyst found insufficient evidence.':'The available evidence is insufficient to establish the conclusion.',
+
+  'The opposing-evidence review did not support the candidate.':'Contradictory evidence weakens the finding.',
+
+  'The discovery lacks two distinct cited evidence origins.':'The finding lacks corroboration from two distinct evidence origins.',
+
+  'No saved calculation is linked to the discovery citations.':'No supporting calculation is traceable to the cited evidence.',
+
+  'A source-grounded timeline has not been established.':'The cited evidence does not establish when the change occurred.',
+
+  'No usable evidence was found for the targeted opposing search.':'The strongest alternative explanation has not been adequately tested.',
+
+  'Cited distinct origins, dated evidence, linked arithmetic and a supported opposing review. Source independence and causality still require human review.':'Dated evidence from distinct origins and traceable calculations support the finding. Source independence and causality still require verification.'
+
+ };
+
+ for(const reason of r.evidence_strength?.reasons||[])if(labels[reason])reasons.append(el('li',labels[reason]));
+
+ if(!reasons.children.length)reasons.append(el('li','Evidence quality cannot yet be established from the available support.'));
+
+
+
+ box.append(reasons);
+
+ explain(box,r.discovery?'This is a supported interpretation of the cited evidence within the report’s stated limits.':'This is a preliminary interpretation, not an established discovery.',r.discovery?'Use the supporting numbers to test the investment thesis, and monitor the stated falsification condition.':'Use it as a research question. Seek independent corroboration and supporting numbers before changing a valuation assumption.');
+
+}
+
+
+
+function render(report){$('results').replaceChildren();$('company-title').textContent=report.company;$('revalue').disabled=freshBusy||!report.valuation_readiness?.can_build;$('revalue').textContent=report.valuation_readiness?.can_build?'Update valuations':'Valuation pending';$('view-valuation').hidden=!report.valuation;const download=$('download');download.hidden=!report.valuation;if(report.valuation)download.href=report.valuation.download_url;else download.removeAttribute('href');
+
+ const summary=section('Investor summary');
+
+ if(report.freshness)summary.append(el('p','As of '+timeLabel(report.freshness.completed_at),'muted'));
+
+ if(report.valuation)summary.append(el('p',report.valuation.summary));
+
+ summary.append(el('p',report.investor_summary));
+
+ renderInvestigation(report);
+
+ renderHistory(report.historical_statements);
+
+
+
+ if(report.reported_results){const r=report.reported_results,box=section('Reported financial results');box.append(el('p',r.period+' · '+r.scope,'muted'));const grid=el('div',undefined,'grid');grid.style.gridTemplateColumns='repeat(2,minmax(0,1fr))';for(const metric of r.metrics){const card=el('div',undefined,'finding');card.style.padding='14px';card.append(el('p',metric.label,'muted'),el('h3',metric.display_value));explain(card,...metricMeaning(metric.label));grid.append(card)}const link=el('a',r.source_label);link.href=r.source_url;link.target='_blank';link.rel='noopener noreferrer';box.append(grid,el('p',r.qualification,'muted'),link)}
+
+ if(report.valuation){const v=report.valuation,box=section('Valuation results');box.append(el('p','Per share · Valuation dated '+dateLabel(v.valuation_date),'muted'));const ref=el('div',undefined,'reference');ref.append(el('span','Saved market reference · '+dateLabel(v.market_price_date)),el('strong',money(v.market_price)));box.append(ref);const scroll=el('div',undefined,'table-scroll'),table=el('table'),head=document.createElement('thead'),tr=el('tr');for(const label of ['Method','Bear','Base','Bull'])tr.append(el('th',label));head.append(tr);table.append(head);const body=el('tbody');for(const method of v.methods){const row=el('tr',undefined,method.primary?'primary':'');row.append(el('td',method.method));for(const key of ['bear','base','bull'])row.append(el('td',money(method[key])));body.append(row)}table.append(body);scroll.append(table);box.append(scroll,el('p',v.qualification,'muted'));explain(box,'Bear, base and bull are weaker, central and stronger business scenarios, not probabilities or guaranteed price limits.','Use the spread to assess assumption risk. Compare only with the dated market reference shown; it is not a live quote.');for(const method of v.methods){const detail=el('details');detail.append(el('summary',method.method+' — interpretation'));explain(detail,...valuationMeaning(method.method));if(method.qualification)detail.append(el('p',method.qualification,'muted'));box.append(detail)}}else{const box=section('Valuation results');box.append(el('p','No current valuation is available for this assessment.','notice'));const missing=el('ul');for(const item of report.valuation_readiness?.missing||[])missing.append(el('li',item));box.append(missing)};
+
+ if(report.valuation?.weighted){const box=section('Conditional valuation range'),grid=el('div',undefined,'grid');for(const key of ['bear','base','bull']){const card=el('div',undefined,'finding');card.append(el('h3',key[0].toUpperCase()+key.slice(1)),el('strong',money(report.valuation.weighted[key])));grid.append(card)}box.append(grid,el('p','Reconciled from the selected valuation methods and their documented weights. These are assumption-dependent scenarios.','muted'));explain(box,'This range combines eligible methods using the model’s documented weights; it is not a statistical confidence interval.','Check whether the chosen weights and underlying methods are credible. A wide range means the investment view is highly sensitive to the scenarios.')}
+
+ if(report.findings.length){const box=section('Reported observations'),grid=el('div',undefined,'grid');box.append(el('p','Prepared observations from supplied disclosures; these are separate from the hypothesis-tested investigation above.','muted'));if(report.findings.length===1)grid.style.gridTemplateColumns='1fr';for(const finding of report.findings){const card=el('div',undefined,'finding');card.append(el('h3',finding.title),el('p',finding.finding),el('p',finding.investor_use,'muted'));if(report.reported_results?.source_url){const link=el('a','Read the supplied financial disclosure');link.href=report.reported_results.source_url;link.target='_blank';link.rel='noopener noreferrer';card.append(link)}grid.append(card)}box.append(grid)}
+
+ const evidence=report.evidence;
+
+ if(evidence?.status==='ready'&&evidence.pdf_url){const sources=section('Source documents'),details=el('details');details.append(el('summary','View supporting company documents'));const link=el('a','Open company evidence PDF');link.href=evidence.pdf_url;link.target='_blank';link.rel='noopener noreferrer';details.append(link);sources.append(details)}
+
+ const news=section('Recent developments to watch');if(report.news_date)news.append(el('p','Checked '+timeLabel(report.news_date),'muted'));const assessedNews=report.news.filter(item=>!item.status?.includes('impact assessment incomplete'));if(assessedNews.length){news.append(el('p','Company disclosures are attributed statements. Other news remains unverified. Possible impacts require review before forecasts change.','notice'));for(const finding of assessedNews){const item=el('article',undefined,'news-item');item.append(el('p',(finding.status||'Possible impact · unverified news').replaceAll('_',' '),'news-label'),el('h3',finding.headline),el('p',finding.potential_impact));if(finding.drivers?.length)item.append(el('p','Valuation inputs to review: '+finding.drivers.map(d=>d.replaceAll('_',' ')).join(', '),'muted'));if(finding.review_action)item.append(el('p',finding.review_action));if(finding.falsification)item.append(el('p','What could change this view: '+finding.falsification,'muted'));explainNews(item,finding);for(const source of finding.sources){try{const url=new URL(source.url);if(url.protocol!=='https:')continue;const link=el('a',source.title);link.href=url.href;link.target='_blank';link.rel='noopener noreferrer';item.append(link)}catch{}}news.append(item)}}else news.append(el('p','No completed recent-news assessment is available. This does not establish that there are no new developments.','muted'));
+
+ const leads=report.news.filter(item=>item.status?.includes('impact assessment incomplete'));
+
+ if(leads.length){const details=el('details');details.append(el('summary','Unassessed news leads ('+leads.length+')'));details.append(el('p','These headlines have not passed an impact assessment and are excluded from the findings and valuation conclusions.','muted'));for(const lead of leads){const item=el('p');for(const source of lead.sources||[]){try{const url=new URL(source.url);if(url.protocol!=='https:')continue;const link=el('a',lead.headline);link.href=url.href;link.target='_blank';link.rel='noopener noreferrer';item.append(link);break}catch{}}details.append(item)}news.append(details)}
+
+ if(report.caveats.length){const box=section('What to keep in mind');for(const caveat of report.caveats)box.append(el('p',caveat))}
+
+}
+
+function clearResults(company){$('results').replaceChildren();$('company-title').textContent=$('company').selectedOptions[0]?.textContent||'Company report';$('download').hidden=true;$('download').removeAttribute('href');$('view-valuation').hidden=true;}
+
+function reportLocation(id=null){if(typeof history!=='undefined')history.replaceState(null,'',id?'#report-'+id:location.pathname+location.search);}
+
+async function loadResults(clearLocation=true){cancelReportWatch();setFreshBusy(false);if(clearLocation)reportLocation();++loadVersion;const company=$('company').value;localStorage.setItem('signalai.company',company);clearResults(company);$('message').textContent='';const box=section('Company research report');box.append(el('p','Generate a new research report with detailed findings, financial trends, valuation scenarios and an appendix of sources. The PDF and editable Excel model will be available together.'));}
+
+$('company').onchange=()=>loadResults();
+
+function showResearchReport(state){
+
+ $('results').replaceChildren();const box=section('Company research report');
+
+ box.append(el('h3',state.validation_only?'Validation report - AI assessment not run':state.status==='partial'?'Research report - stated evidence limitations':'Research report'),el('p','Prepared '+timeLabel(state.updated_at),'muted'));
+
+ if(state.validation_only)box.append(el('p','These are validation outputs. Fresh AI findings and news-impact assessments have not been verified.','notice'));
+
+ else if(state.status==='partial')box.append(el('p','The report separates completed analysis from remaining evidence gaps. Its conclusions and valuations are conditional.','notice'));
+
+ const overview=state.overview||{};
+
+ if(overview.valuation){const grid=el('div',undefined,'scenario-values');for(const [key,label] of [['bear','Bear'],['base','Base'],['bull','Bull']]){const item=el('div');item.append(el('h3',label+' case'),el('strong',money(overview.valuation[key])));grid.append(item)}box.append(grid,el('p','Conditional value per share. The spread shows sensitivity to weaker, central and stronger business assumptions; these are not guaranteed prices.','muted'));}
+
+ if(overview.research_areas)box.append(el('p',overview.research_areas+' company research areas assessed. '+overview.completed_areas+' completed within their stated scope; remaining qualifications are explained in the report.','muted'));
+
+ if(overview.news_checked_at)box.append(el('p','Company updates checked '+timeLabel(overview.news_checked_at)+'. Source-verification limits are stated in the PDF.','muted'));
+
+ const links=el('div',undefined,'toolbar');
+
+ if(state.view_url){const read=el('a','Read research report','button');read.href=state.view_url;read.target='_blank';read.rel='noopener noreferrer';links.append(read)}
+
+ const pdf=el('a','Download research PDF','button secondary');pdf.href=state.pdf_url;
+
+ const excel=el('a','Download editable Excel','button secondary');excel.href=state.excel_url;links.append(pdf,excel);box.append(links);
+
+ box.append(el('p',state.research_excel_linked?'PDF and Excel contain findings from this investigation. Excel includes the cited research, current-update review and editable valuation assumptions.':'The PDF explains historical trends, valuation assumptions, risks and supporting evidence.','muted'));
+
+ box.append(el('p','Edits to a downloaded workbook stay in that copy. They do not automatically change the saved model inputs or the PDF, which records the model when the report was generated.','muted'));
+
+}
+
+let cancelReportWatch=()=>{};
+function waitForResearch(job,company,version){
+ if(version!==loadVersion||company!==$('company').value)return;
+ cancelReportWatch();
+ let stopped=false,pending=false,timer=null,controller=null,started=Date.now();
+ const current=()=>version===loadVersion&&company===$('company').value;
+ const resume=()=>{if(document.visibilityState!=='hidden')check();};
+ const stop=()=>{stopped=true;clearTimeout(timer);controller?.abort();document.removeEventListener('visibilitychange',resume);for(const name of ['focus','pageshow','online'])window.removeEventListener(name,resume);};
+ cancelReportWatch=stop;
+ const elapsed=()=>{const seconds=Math.max(0,Math.floor((Date.now()-started)/1000));return Math.floor(seconds/60)+' min '+String(seconds%60).padStart(2,'0')+' sec';};
+ const check=async()=>{
+  if(stopped)return;
+  if(!current()){stop();return;}
+  if(pending)return;
+  clearTimeout(timer);pending=true;controller=new AbortController();
+  // A stalled status request must not leave the page waiting indefinitely.
+  const timeout=setTimeout(()=>controller.abort(),12000);
+  try{
+   const state=await api(job.status_url,undefined,{signal:controller.signal});
+   if(stopped||!current()){stop();return;}
+   if(state.id!==job.report_id||state.company!==company){const error=Error('Report identity does not match this request.');error.status=409;throw error;}
+   if(state.created_at&&Number.isFinite(Date.parse(state.created_at)))started=Date.parse(state.created_at);
+   if(['queued','running'].includes(state.status)){
+    $('message').textContent='Preparing your research report · '+elapsed();
+   }else{
+    stop();setFreshBusy(false);$('message').textContent='';
+    if(state.pdf_url&&['completed','partial'].includes(state.status))showResearchReport(state);
+    else{$('results').replaceChildren();$('message').textContent=state.error||'The new report could not be completed. No previous report is displayed.';}
+   }
+  }catch(error){
+   if(stopped||!current())return;
+   if(error.status>=400&&error.status<500&&![408,429].includes(error.status)){stop();setFreshBusy(false);$('message').textContent=error.message;}
+   else $('message').textContent='Connection interrupted. Checking your existing report again · '+elapsed();
+  }finally{
+   clearTimeout(timeout);pending=false;
+   if(!stopped&&current())timer=setTimeout(check,1800);
+  }
+ };
+ document.addEventListener('visibilitychange',resume);
+ for(const name of ['focus','pageshow','online'])window.addEventListener(name,resume);
+ check();
+}
+
+$('investigate').onclick=async()=>{const company=$('company').value,version=++loadVersion;setFreshBusy(true);clearResults(company);reportLocation();$('message').textContent='Preparing your research report…';try{const job=await api('/analysis-reports',{company});if(version===loadVersion)reportLocation(job.report_id);waitForResearch(job,company,version)}catch(error){setFreshBusy(false);if(version===loadVersion){$('results').replaceChildren();$('message').textContent=error.message;}}};
+
+$('refresh').onclick=$('investigate').onclick;$('revalue').onclick=$('investigate').onclick;
+
+(async()=>{const companies=await api('/company-library');for(const company of companies){const option=el('option',company.legal_name);option.value=company.id;$('company').append(option)}const saved=localStorage.getItem('signalai.company');if(companies.some(c=>c.id===saved))$('company').value=saved;await loadResults(false);const requested=(typeof location==='undefined'?'':location.hash).match(/^#report-([a-f0-9]{32})$/);if(requested){const version=loadVersion,state=await api('/analysis-reports/'+requested[1]);if(version!==loadVersion)return;if(!companies.some(c=>c.id===state.company))throw Error('The report company is unavailable.');$('company').value=state.company;clearResults(state.company);setFreshBusy(['queued','running'].includes(state.status));$('message').textContent='Opening the requested report…';waitForResearch({report_id:state.id,status_url:'/analysis-reports/'+state.id},state.company,version)}})().catch(error=>$('message').textContent=error.message);
+
+</script></body></html>

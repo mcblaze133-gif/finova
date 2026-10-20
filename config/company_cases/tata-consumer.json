@@ -1,0 +1,188 @@
+{
+  "as_of": "2026-10-19",
+  "market": {
+    "debt": 28195100000.0,
+    "cash": 30465700000.0,
+    "nci": 14013300000.0,
+    "preferred": 0.0,
+    "nonoperating_assets": 28426000000.0,
+    "price": 978.9,
+    "price_date": "2026-10-16",
+    "valuation_date": "2026-10-19",
+    "current_shares": 989561780,
+    "diluted_shares": 989561780,
+    "shares_date": "2026-03-31",
+    "balance_date": "2026-03-31",
+    "accounting_scope": "consolidated",
+    "currency": "INR",
+    "other_senior_claims": 596800000,
+    "interim_dividends": 9895617800,
+    "lease_policy": "Borrowings and lease liabilities deducted once, with post-Ind AS116 operating EBITDA. Renewal-lease capex requires review.",
+    "quote_source": "NSE India home market display,16-Oct-2026 close, accessed19-Oct-2026. https://www.nseindia.com/ . Not a live19-Oct quote."
+  },
+  "methods": [
+    {
+      "method": "DCF FCFF",
+      "applicable": "Yes",
+      "importance": "High",
+      "reason": "Conditional intrinsic cash-flow method using sourced statements and explicit company-specific scenarios.",
+      "weight": 1,
+      "weight_rationale": "Analyst reconciliation based on cash-flow visibility and company suitability; correlated methods are not independent proof."
+    },
+    {
+      "method": "FCFE",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: unstable financing or incomplete cash distribution policy prevents a reliable equity-cash-flow interpretation.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "Forward P/E",
+      "applicable": "Yes",
+      "importance": "Low",
+      "reason": "Analyst forward multiple stress cases, not peer-backed CCA. Zero reconciliation weight.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "EV/EBITDA",
+      "applicable": "Yes",
+      "importance": "Low",
+      "reason": "Analyst forward multiple stress cases, not peer-backed CCA. Zero reconciliation weight.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "EV/EBIT",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: inferior denominator or no suitable matched-period peers; correlated multiples add no independent evidence.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "EV/Sales",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: inferior denominator or no suitable matched-period peers; correlated multiples add no independent evidence.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "P/S",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: inferior denominator or no suitable matched-period peers; correlated multiples add no independent evidence.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "PEG",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: inferior denominator or no suitable matched-period peers; correlated multiples add no independent evidence.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "Precedent EV/Revenue",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: no verified matching transaction consideration, ownership, enterprise-value and financial denominator.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "Precedent EV/EBITDA",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: no verified matching transaction consideration, ownership, enterprise-value and financial denominator.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "DDM",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: payout is not representative of the reinvestment-led business valuation.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "Residual income",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: historical OCI and equity adjustments have not been reconciled to clean surplus.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "NAV",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: no independently justified realizable asset values; book values omit brand economics.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    },
+    {
+      "method": "SOTP",
+      "applicable": "No",
+      "importance": "Low",
+      "reason": "Excluded: segment forecasts, ownership-adjusted values or suitable evidence not sufficient for this method.",
+      "weight": 0,
+      "weight_rationale": "Excluded or unvalidated multiple cross-check, zero weight."
+    }
+  ],
+  "revenue_route": "Direct disclosed drivers",
+  "margin_route": "EBITDA margin",
+  "direct_growth_rationale": "Q1FY27 India volume13%, growth-business sales47%, tea pricing pass-through and international FX translation support a category mix forecast, not one group volume figure. Base growth12% fades to8%, while margin13.6% in Q1 gradually improves with integration and growth-business scale.",
+  "drivers": [
+    {
+      "driver": "Q1FY27 India volume13%, growth-business sales47%, tea pricing pass-through and international FX translation support a category mix forecast, not one group volume figure. Base growth12% fades to8%, while margin13.6% in Q1 gradually improves with integration and growth-business scale.",
+      "source_type": "historical",
+      "confidence": "medium",
+      "source": "FY26 consolidated statements and latest result presentation"
+    }
+  ],
+  "research_notes": [
+    {
+      "topic": "Mix versus pricing",
+      "finding": "Q1FY27 India tea volume rose2% while revenue fell4% as costs were passed through. Growth businesses grew47% and represented36% of India revenue. Group growth is not a simple common volume multiplied by one price assumption.",
+      "source": "Q1FY27 deck PDF5-6."
+    },
+    {
+      "topic": "Treasury reconciliation",
+      "finding": "Use balance-sheet cash INR3046.57cr and gross borrowings including overdrafts. Cash-flow closing cash INR1412.79cr already subtracts INR1633.78cr overdrafts. Using that net cash and deducting overdraft again would double count debt.",
+      "source": "Official FY26 consolidated statements PDF12,16."
+    },
+    {
+      "topic": "Minority purchase commitments",
+      "finding": "INR1330.90cr put/call purchase commitments concern fully consolidated subsidiaries with NCI. This case deducts reported INR1401.33cr NCI at carrying proxy and separately INR59.68cr contingent consideration. It does not deduct the put liability again. Contract-by-contract minority fair-value reconciliation is unresolved and could materially change equity value.",
+      "source": "Official annual consolidated statements PDF17,47,56."
+    },
+    {
+      "topic": "Associate losses",
+      "finding": "Equity-method results of negative INR90.70cr are excluded from operating EBIT. Associate/JV carrying values are added once in the bridge. Starbucks sales are not consolidated group revenue and are not assigned a standalone positive enterprise value without a segment model.",
+      "source": "Official FY26 statements PDF13,59."
+    },
+    {
+      "topic": "Method exclusions",
+      "finding": "Low payout and continuing portfolio reinvestment make DDM a weak primary method. NAV omits brands. SOTP awaits separate regional/segment forecasts and matched peer evidence. P/E and EV/EBITDA are visible multiple stress cases with zero weight.",
+      "source": "Case-specific method selection."
+    }
+  ],
+  "market_notes": [
+    "31-Mar-2026 balance and share basis rolled forward with estimated uniform interim FCFE, not a reported October balance.",
+    "Assume INR10 per share distribution after balance date. Payment timing is an explicit analyst case assumption, not independently confirmed bank settlement.",
+    "16-Oct close is the last dated reference used here. Latest intraday prices and later dilution are not asserted.",
+    "Other debt-like claims and nonoperating assets are carrying-value proxies. Minority buyout, pension and lease policies are described in Research."
+  ],
+  "issues": [
+    "Conditional analyst scenarios, not a precise fair-value recommendation. Capital costs, terminal returns, current cash bridge and multiples require analyst review.",
+    "Historical statements backfilled from 2022 where reporting periods exist. The Statement history schedule preserves as-reported scopes; only matching annual inputs feed the forecast.",
+    "No verified category-matched peer-forward estimate set or transaction database. Market multiples have zero reconciliation weight.",
+    "Native desktop Excel recalculation not verified. News checks may be incomplete and unverified headlines never change numerical forecasts automatically.",
+    "Minority put/call settlement and corresponding NCI derecognition remain unresolved; reported NCI is a carrying-value proxy."
+  ]
+}

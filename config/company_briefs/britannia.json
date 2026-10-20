@@ -1,0 +1,7 @@
+{
+  "findings": [
+    {"title":"Recurring earnings matter", "finding":"The reviewed financials identify a tax-related benefit in reported profit. Reported earnings growth therefore needs to be distinguished from recurring operating performance.", "investor_use":"Helps assess whether recent profit growth is a sustainable basis for forecasts and earnings multiples."},
+    {"title":"Growth and margins need to be assessed together", "finding":"The reviewed company material describes volume-led growth alongside commodity, packaging and advertising-cost pressures.", "investor_use":"Helps identify whether sales growth is translating into sustainable profitability."},
+    {"title":"Cash generation deserves a separate check", "finding":"Operating cash generation is a useful cross-check on reported profit, capital spending and working-capital movements.", "investor_use":"Helps assess the capacity to fund reinvestment and shareholder distributions."}
+  ]
+}
