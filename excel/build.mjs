@@ -513,14 +513,13 @@ if(input.sources.length){
  for(const s of ['Bear','Base','Bull'])assert.ok(Number.isFinite(num(s,'G66'))&&num(s,'G66')>0,'Populated company DCF must calculate: '+s);
  block('Dashboard','K54',[['Case','DCF per share']]);
  ['Bear','Base','Bull'].forEach((s,i)=>{put('Dashboard',`K${55+i}`,s);link('Dashboard',`L${55+i}`,`'${s}'!G66`);});
- block('Dashboard','K72',[['Year','Revenue (INR crore)','Parent PAT (INR crore)']]);
- for(let y=0;y<displayedPeriods.length;y++){const c=financialColumn(displayedPeriods[y].index),r=73+y;form('Dashboard',`K${r}`,`=TEXT('Financials'!${c}6,"yyyy")`);form('Dashboard',`L${r}`,`='Financials'!${c}${metricRows.revenue}/10000000`);form('Dashboard',`M${r}`,`='Financials'!${c}${metricRows.net_income}/10000000`);}
- band('Dashboard',71,'Historical financials (INR crore)');
+ // Keep the chart's unit-conversion data beside its actual input schedule.
+ // No historical helper table or empty-year date formulas belong on Dashboard.
+ block('Financials','C41',[['Year','Comparable revenue (INR crore)']]);
+ for(let y=0;y<displayedPeriods.length;y++){const c=financialColumn(displayedPeriods[y].index),r=42+y;form('Financials',`C${r}`,`=TEXT(${c}6,"yyyy")`);form('Financials',`D${r}`,`=${c}${metricRows.revenue}/10000000`);}
  const valueChart=sheets.Dashboard.charts.add('bar',sheets.Dashboard.getRange('K54:L57'));valueChart.title='Conditional DCF value per share';valueChart.setPosition('J8','Q24');valueChart.series.items[0].fill=teal;valueChart.yAxis={numberFormatCode:'"₹"#,##0',numberFormatSourceLinked:false};
  // Do not plot absent historical years as reported zero revenue.
- const firstHistory=73;
- if(firstHistory>73)block('Dashboard',`K${firstHistory-1}`,[['Year','Revenue (INR crore)']]);
- const revenueChart=sheets.Dashboard.charts.add('line',sheets.Dashboard.getRange(`K${firstHistory-1}:L${72+displayedPeriods.length}`));revenueChart.title='Comparable-basis revenue (INR crore)';revenueChart.setPosition('J26','Q38');revenueChart.series.items[0].line={fill:ink,style:'solid',width:2};revenueChart.yAxis={numberFormatCode:'#,##0',numberFormatSourceLinked:false};
+ const revenueChart=sheets.Dashboard.charts.add('line',sheets.Financials.getRange(`C41:D${41+displayedPeriods.length}`));revenueChart.title='Comparable-basis revenue (INR crore)';revenueChart.setPosition('J26','Q38');revenueChart.series.items[0].line={fill:ink,style:'solid',width:2};revenueChart.yAxis={numberFormatCode:'#,##0',numberFormatSourceLinked:false};
  valueChart.titleTextStyle.fontSize=12;revenueChart.titleTextStyle.fontSize=12;
  verification.nativeCharts=2;
 }

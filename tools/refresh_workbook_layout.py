@@ -28,6 +28,9 @@ async def main(company, export_id=None):
         raise RuntimeError('Layout build failed. Previous report remains available.')
     export=storage.rows('SELECT * FROM excel_exports WHERE id=?',(built['export_id'],))[0]
     after=reports.workbook_values(export['workbook_path'])
+    for cell,value in after['Dashboard'].items():
+        if re.fullmatch(r'(?:[C-I]|[K-M])7[1-7]',cell):
+            assert value is None,('Removed dashboard history table still populated',cell)
     compared=0
     for sheet in ('Dashboard','Bear','Base','Bull','Statement history'):
         for cell,value in before[sheet].items():
