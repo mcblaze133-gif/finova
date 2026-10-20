@@ -11,7 +11,7 @@ const nativeLinks=[];
 const nativeLink=(sheet,cell,url,label)=>{sheets[sheet].getRange(cell).values=[[label]];nativeLinks.push({sheet,cell,url});};
 const names=['Dashboard','Assumptions','Bear','Base','Bull','Multiple policy','Peers','Transactions','Segments','NAV','Financials','Market','Methods','Drivers','Checks','Sources','Guide'];
 if(input.research_notes?.length)names.splice(5,0,'Research');
-if(input.historical_statements?.periods?.length)names.push('Statement history');
+if(input.historical_statements?.periods?.length)names.splice(1,0,'Statement history');
 const sheets=Object.fromEntries(names.map(n=>[n,wb.worksheets.add(n)]));
 const ink='#172F48', teal='#12695C', blue='#0000FF', green='#008000', light='#EDF3F6', amber='#FFF1CD';
 const amount='#,##0;(#,##0);"-"', pct='0.0%;(0.0%);"-"', price='"₹"#,##0.00;("₹"#,##0.00);"-"';
@@ -33,15 +33,30 @@ for(const [name,s] of Object.entries(sheets)){
 }
 
 // Original actuals remain separate from all scenario builds.
-title('Financials','Historical financials','Plain INR and actual shares. Source amounts are converted once at intake.');
-block('Financials','C5',[['Metric','Unit','Historical 1','Historical 2','Historical 3','Historical 4','Historical 5']]);
+const financialPeriods=input.periods.map((date,index)=>({date,index})).filter(p=>p.date);
+const displayedPeriods=financialPeriods.length?financialPeriods:[{date:null,index:4}];
+const financialColumn=index=>col(4+displayedPeriods.findIndex(p=>p.index===index));
+const latestFinancialColumn=col(3+displayedPeriods.length);
+const actualDate=`'Financials'!${latestFinancialColumn}6`;
+title('Financials','Comparable forecast inputs','Plain INR and actual shares. Full reported history is on Statement history.');
+block('Financials','C5',[['Metric','Unit',...displayedPeriods.map(p=>p.date?`FY${p.date.slice(0,4)}`:'No reviewed period')]]);
 put('Financials','C6','Period ended');
-for(let y=0;y<5;y++){const p=input.periods[y];if(p)put('Financials',`${col(4+y)}6`,new Date(p+'T00:00:00Z'));}
-sheets.Financials.getRange('E6:I6').setNumberFormat('dd-mmm-yyyy');
+for(const p of displayedPeriods)if(p.date)put('Financials',`${financialColumn(p.index)}6`,new Date(p.date+'T00:00:00Z'));
+sheets.Financials.getRange(`E6:${latestFinancialColumn}6`).setNumberFormat('dd-mmm-yyyy');
+sheets.Financials.getRange(`E:${latestFinancialColumn}`).format.columnWidth=24;
 const metricRows={};
 Object.keys(input.financials).forEach((metric,i)=>{let r=7+i;metricRows[metric]=r;put('Financials',`C${r}`,metric.replaceAll('_',' '));put('Financials',`D${r}`,metric==='shares'?'actual shares':'INR');
- input.financials[metric].forEach((v,y)=>inputCell('Financials',`${col(4+y)}${r}`,v));});
-const actual=m=>`'Financials'!I${metricRows[m]}`;
+ for(const p of displayedPeriods){const v=input.financials[metric][p.index],cell=`${financialColumn(p.index)}${r}`;
+  if(v===null||v===undefined){put('Financials',cell,'Not verified');sheets.Financials.getRange(cell).format={fill:'#F4F6F7',font:{color:'#536672'}};}
+  else inputCell('Financials',cell,v);
+ }});
+const actual=m=>`'Financials'!${latestFinancialColumn}${metricRows[m]}`;
+const historyScopes=[...new Set((input.historical_statements?.periods||[]).map(p=>p.scope))];
+const forecastBasis=(input.historical_statements?.periods||[]).find(p=>p.end===displayedPeriods.at(-1).date)?.scope;
+const inputNotes=[`Forecast basis: ${forecastBasis||'reviewed matching reporting scope'}. Only available periods on this basis are shown.`,
+ historyScopes.length>1?'Older periods on a different reporting basis are preserved on Statement history. A business disposal or demerger can change comparability. Do not combine these as like-for-like growth.':'Statement history contains the full reviewed history and source audit.',
+ 'Not verified means no accepted historical input. Forecast assumptions remain separate on Assumptions. Missing capex is not zero.'];
+inputNotes.forEach((text,i)=>{const r=30+i*3;put('Financials',`C${r}`,text);sheets.Financials.getRange(`C${r}:I${r+2}`).merge();sheets.Financials.getRange(`C${r}:I${r+2}`).format.wrapText=true;});
 
 // Preserve as-reported statements on their own dated basis. Only the matched
 // Financials schedule feeds forecasts; a demerged or 15-month series cannot
@@ -226,7 +241,7 @@ for(const scenario of ['bear','base','bull']){
  title(s,`${s} operating forecast and valuation`,'Plain INR and actual shares. End-year discounting. All financial estimates require source or judgement labels.');
  put(s,'C4','WACC override');inputCell(s,'E4');put(s,'F4','Terminal g override');inputCell(s,'H4');
  put(s,'K4','Reverse growth override');inputCell(s,'M4');put(s,'N4','Margin override');inputCell(s,'P4');
- put(s,'C5','Forecast period');for(let y=0;y<5;y++)form(s,`${col(4+y)}5`,`=IF(ISNUMBER('Financials'!I6),EDATE('Financials'!I6,${12*(y+1)}),"Period required")`);
+ put(s,'C5','Forecast period');for(let y=0;y<5;y++)form(s,`${col(4+y)}5`,`=IF(ISNUMBER(${actualDate}),EDATE(${actualDate},${12*(y+1)}),"Period required")`);
  sheets[s].getRange('E5:I5').setNumberFormat('dd-mmm-yyyy');
  for(const [r,l] of Object.entries(labels))put(s,`C${r}`,l);
  for(let y=0;y<5;y++){
@@ -303,7 +318,7 @@ for(const scenario of ['bear','base','bull']){
  sheets[s].getRange('G66:G79').setNumberFormat(price);
  band(s,80,'Valuation date and interim cash bridge');
  put(s,'C81','Valuation date');form(s,'E81',`=IF(ISNUMBER('Market'!D22),'Market'!D22,${actual('revenue').replace(/I\d+$/,'I6')})`);sheets[s].getRange('E81').setNumberFormat('dd-mmm-yyyy');
- put(s,'C82','Remaining first forecast-year fraction');form(s,'E82',ready(['E81','E5',"'Financials'!I6"],`(E5-E81)/(E5-'Financials'!I6)`,`AND(E81>='Financials'!I6,E81<E5)`));sheets[s].getRange('E82').setNumberFormat(pct);
+ put(s,'C82','Remaining first forecast-year fraction');form(s,'E82',ready(['E81','E5',actualDate],`(E5-E81)/(E5-${actualDate})`,`AND(E81>=${actualDate},E81<E5)`));sheets[s].getRange('E82').setNumberFormat(pct);
  put(s,'C84','Estimated interim FCFE since balance');form(s,'E84',`=IF(E82=1,0,${ready(['E29','E82'],'E29*(1-E82)').slice(1)})`);
  put(s,'C85','Assumed distributions / dividend claims');form(s,'E85',`=IF(ISNUMBER('Market'!D28),'Market'!D28,IF(E82=1,0,"n.a."))`);
  put(s,'C86','Estimated change to equity bridge');form(s,'E86',ready(['E84','E85'],'E84-E85'));
@@ -352,7 +367,7 @@ if(displayedMethods.length<14)sheets.Dashboard.getRange(`C${9+displayedMethods.l
 put('Dashboard','C6',`Selected methods shown; ${excluded.length} excluded methods omitted from this view. See Methods for reasons.`);
 // Blank historical facts are unavailable evidence, not invitations to insert
 // arbitrary estimates. Keep editable forecast assumptions on Assumptions.
-for(const [metric,values] of Object.entries(input.financials))values.forEach((v,y)=>{if(v===null)sheets.Financials.getRange(`${col(4+y)}${metricRows[metric]}`).format.fill='#F4F6F7';});
+// Missing inputs are labelled where the compact input schedule is populated.
 band('Dashboard',24,'Reconciled conditional scenario values');
 put('Dashboard','C25','Weighted value per share');
 block('Dashboard','C54',[['Weight calculation components','Bear','Base','Bull','Weight','Bear inputs','Base inputs','Bull inputs']]);
@@ -455,8 +470,8 @@ const verification={sheets:names.length,financialInputs:input.sources.length,nat
 // Recalculate real formulas with a disposable synthetic fixture, then restore
 // every input. No fixture company values are exported to the user workbook.
 const original=[];const setTemp=(s,a,v)=>{original.push([s,a,sheets[s].getRange(a).values]);put(s,a,v);};
-for(const metric of Object.keys(metricRows))setTemp('Financials',`I${metricRows[metric]}`,({revenue:1000,ebitda:200,da:20,ebit:180,net_income:135,cfo:140,capex:30,operating_nwc:100,debt:100,cash:20,nci:0,preferred:0,nonoperating_assets:0,book_equity:500,shares:10,dividends:54,interest:10,assets:800,liabilities:300,invested_capital:600})[metric]);
-setTemp('Financials','I6',new Date('2026-03-31T00:00:00Z'));
+for(const metric of Object.keys(metricRows))setTemp('Financials',`${latestFinancialColumn}${metricRows[metric]}`,({revenue:1000,ebitda:200,da:20,ebit:180,net_income:135,cfo:140,capex:30,operating_nwc:100,debt:100,cash:20,nci:0,preferred:0,nonoperating_assets:0,book_equity:500,shares:10,dividends:54,interest:10,assets:800,liabilities:300,invested_capital:600})[metric]);
+setTemp('Financials',`${latestFinancialColumn}6`,new Date('2026-03-31T00:00:00Z'));
 for(const [a,v] of Object.entries({D6:new Date('2026-10-16T00:00:00Z'),D7:120,D8:10,D9:100,D10:20,D11:0,D12:0,D13:0,D14:'Synthetic fixture',D15:new Date('2026-10-16T00:00:00Z'),D16:new Date('2026-03-31T00:00:00Z'),D17:'consolidated',D18:'Consistent fixture lease policy',D19:'INR',D20:10}))setTemp('Market',a,v);
 setTemp('Market','D22',new Date('2026-03-31T00:00:00Z'));setTemp('Market','D28',0);setTemp('Market','D29',0);
 setTemp('Drivers','E6','Volume and price/mix');setTemp('Drivers','E7','EBITDA margin');
@@ -499,13 +514,13 @@ if(input.sources.length){
  block('Dashboard','K54',[['Case','DCF per share']]);
  ['Bear','Base','Bull'].forEach((s,i)=>{put('Dashboard',`K${55+i}`,s);link('Dashboard',`L${55+i}`,`'${s}'!G66`);});
  block('Dashboard','K72',[['Year','Revenue (INR crore)','Parent PAT (INR crore)']]);
- for(let y=0;y<5;y++){const c=col(4+y),r=73+y;form('Dashboard',`K${r}`,`=TEXT('Financials'!${c}6,"yyyy")`);form('Dashboard',`L${r}`,`='Financials'!${c}${metricRows.revenue}/10000000`);form('Dashboard',`M${r}`,`='Financials'!${c}${metricRows.net_income}/10000000`);}
+ for(let y=0;y<displayedPeriods.length;y++){const c=financialColumn(displayedPeriods[y].index),r=73+y;form('Dashboard',`K${r}`,`=TEXT('Financials'!${c}6,"yyyy")`);form('Dashboard',`L${r}`,`='Financials'!${c}${metricRows.revenue}/10000000`);form('Dashboard',`M${r}`,`='Financials'!${c}${metricRows.net_income}/10000000`);}
  band('Dashboard',71,'Historical financials (INR crore)');
  const valueChart=sheets.Dashboard.charts.add('bar',sheets.Dashboard.getRange('K54:L57'));valueChart.title='Conditional DCF value per share';valueChart.setPosition('J8','Q24');valueChart.series.items[0].fill=teal;valueChart.yAxis={numberFormatCode:'"₹"#,##0',numberFormatSourceLinked:false};
  // Do not plot absent historical years as reported zero revenue.
- const firstHistory=73+input.periods.filter(v=>v===null).length;
+ const firstHistory=73;
  if(firstHistory>73)block('Dashboard',`K${firstHistory-1}`,[['Year','Revenue (INR crore)']]);
- const revenueChart=sheets.Dashboard.charts.add('line',sheets.Dashboard.getRange(`K${firstHistory-1}:L77`));revenueChart.title='Reported revenue (INR crore)';revenueChart.setPosition('J26','Q38');revenueChart.series.items[0].line={fill:ink,style:'solid',width:2};revenueChart.yAxis={numberFormatCode:'#,##0',numberFormatSourceLinked:false};
+ const revenueChart=sheets.Dashboard.charts.add('line',sheets.Dashboard.getRange(`K${firstHistory-1}:L${72+displayedPeriods.length}`));revenueChart.title='Comparable-basis revenue (INR crore)';revenueChart.setPosition('J26','Q38');revenueChart.series.items[0].line={fill:ink,style:'solid',width:2};revenueChart.yAxis={numberFormatCode:'#,##0',numberFormatSourceLinked:false};
  valueChart.titleTextStyle.fontSize=12;revenueChart.titleTextStyle.fontSize=12;
  verification.nativeCharts=2;
 }
@@ -547,7 +562,7 @@ const finalScan=await wb.inspect({kind:'match',searchTerm:'#REF!|#DIV/0!|#VALUE!
 await fs.writeFile(path.join(out,'formula-scan.json'),finalScan.ndjson);
 assert.ok(!finalScan.ndjson.includes('"kind":"match"'),'Workbook contains spreadsheet errors');
 await fs.writeFile(path.join(out,'verification.json'),JSON.stringify(verification,null,2));
-for(const name of names){if(args.includes('--focused-previews')&&!['Dashboard','Financials','Statement history'].includes(name))continue;const range=name==='Assumptions'?'C2:P15':name==='Guide'?'C2:D17':name==='Dashboard'?'C2:Q51':name==='Research'?'C2:E17':name==='Peers'?'C2:J12':name==='Multiple policy'?'C2:N13':name==='Transactions'?'C2:L12':name==='Sources'?'C2:J12':name==='Segments'&&input.segments?.length?'C2:N33':name==='Segments'?'C2:M12':name==='Checks'?'C2:E14':name==='NAV'?'C2:I12':name==='Statement history'?`C2:${col(2+input.historical_statements.periods.length)}33`:name==='Financials'?'C2:I28':name==='Market'?'C2:F25':name==='Methods'?'C2:H20':name==='Drivers'?'C2:H17':'C2:I20';
+for(const name of names){if(args.includes('--focused-previews')&&!['Dashboard','Financials','Statement history'].includes(name))continue;const range=name==='Assumptions'?'C2:P15':name==='Guide'?'C2:D17':name==='Dashboard'?'C2:Q51':name==='Research'?'C2:E17':name==='Peers'?'C2:J12':name==='Multiple policy'?'C2:N13':name==='Transactions'?'C2:L12':name==='Sources'?'C2:J12':name==='Segments'&&input.segments?.length?'C2:N33':name==='Segments'?'C2:M12':name==='Checks'?'C2:E14':name==='NAV'?'C2:I12':name==='Statement history'?`C2:${col(2+input.historical_statements.periods.length)}33`:name==='Financials'?'C2:I38':name==='Market'?'C2:F25':name==='Methods'?'C2:H20':name==='Drivers'?'C2:H17':'C2:I20';
  const blob=await wb.render({sheetName:name,range,scale:1,format:'png'});await fs.writeFile(path.join(out,'preview-'+name.replaceAll(' ','-')+'.png'),new Uint8Array(await blob.arrayBuffer()));}
 if(input.sources.length){for(const [label,sheetName,range] of [['Base-results','Base','C45:J95'],['Base-sensitivity','Base','K6:P23'],['Market-bridge','Market','C22:K40']]){const blob=await wb.render({sheetName,range,scale:1,format:'png'});await fs.writeFile(path.join(out,'preview-'+label+'.png'),new Uint8Array(await blob.arrayBuffer()));}}
 if(input.research_report){
