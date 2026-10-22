@@ -128,7 +128,7 @@ async def primary_evidence(profile, directory):
             async with asyncio.timeout(35):
                 source_fetcher = documents.Fetcher(['newsonair.gov.in']) if original_news else fetcher
                 data, kind, final = await source_fetcher.fetch(url)
-                pages, links = await asyncio.to_thread(documents.extract, data, kind)
+                pages, links = await asyncio.to_thread(documents.extract_cached, data, kind)
             digest = hashlib.sha256(data).hexdigest()
             (directory / ('official-'+digest+('.pdf' if data.startswith(b'%PDF') else '.html'))).write_bytes(data)
             sid = len(sources)
@@ -148,7 +148,9 @@ async def primary_evidence(profile, directory):
                 blocks.append({'text':f'Original company source, page {page}. Retrieved {storage.now()}.\n'+excerpt,
                                'source_ids':[sid]})
                 budget -= len(excerpt)
-            coverage.append({'url':final,'status':'original_read','sha256':digest})
+            receipt=next((r for r in reversed(source_fetcher.receipts) if r['url']==final),None)
+            coverage.append({'url':final,'status':'original_read','sha256':digest,
+                             'freshness_check':receipt})
             if is_seed:
                 for href,label in links:
                     target=urljoin(final,href)

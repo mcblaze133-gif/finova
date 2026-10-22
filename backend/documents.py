@@ -6,6 +6,7 @@ import ipaddress
 import json
 import re
 import socket
+from pathlib import Path
 from html.parser import HTMLParser
 from urllib.parse import urlsplit, urljoin, urldefrag
 from urllib.robotparser import RobotFileParser
@@ -18,6 +19,7 @@ USER_AGENT = 'SignalAIResearch/0.3'
 MAX_BYTES = 40 * 1024 * 1024
 MAX_PAGES = 600
 MAX_TEXT = 3_000_000
+PARSER_CODE_HASH = hashlib.sha256(Path(__file__).read_bytes()).digest()
 
 
 def allowed_url(url, domains):
@@ -74,6 +76,7 @@ class Fetcher:
         self.domains = domains
         self.robots = {}
         self.requests = 0
+        self.receipts = []
 
     async def raw(self, url, limit=MAX_BYTES, *, access_policy=None):
         initial_host = urlsplit(url).hostname
@@ -89,13 +92,23 @@ class Fetcher:
             self.requests += 1
             if self.requests > 45:
                 raise ValueError('Source request budget exhausted.')
+            from backend import source_cache
+            cached = await asyncio.to_thread(source_cache.load, url, limit)
+            conditional = source_cache.validators(cached)
             # No proxy environment or credentials inherited by source requests.
             async with httpx.AsyncClient(timeout=httpx.Timeout(25, connect=10), trust_env=False,
                                          follow_redirects=False, headers={'User-Agent': USER_AGENT}) as client:
-                async with client.stream('GET', url) as response:
+                async with client.stream('GET', url, headers=conditional) as response:
                     if response.status_code in (301, 302, 303, 307, 308):
                         url = urljoin(url, response.headers.get('location', ''))
                         continue
+                    if response.status_code == 304:
+                        if not cached or not conditional:
+                            raise ValueError('Source returned HTTP 304 without a verified cached body.')
+                        await asyncio.to_thread(source_cache.revalidated,url,cached,response.headers)
+                        self.receipts.append({'url':url,'checked_at':storage.now(),'http_status':304,
+                                              'sha256':cached['sha256'],'body_reused':True})
+                        return cached['data'],cached['content_type'],url
                     if response.status_code != 200:
                         raise ValueError(f'Source returned HTTP {response.status_code}.')
                     data = bytearray()
@@ -103,7 +116,11 @@ class Fetcher:
                         data.extend(block)
                         if len(data) > limit:
                             raise ValueError('Source exceeds download size limit.')
-                    return bytes(data), response.headers.get('content-type', ''), url
+                    body=bytes(data);kind=response.headers.get('content-type', '')
+                    await asyncio.to_thread(source_cache.store,url,body,kind,response.headers)
+                    self.receipts.append({'url':url,'checked_at':storage.now(),'http_status':200,
+                                          'sha256':hashlib.sha256(body).hexdigest(),'body_reused':False})
+                    return body, kind, url
         raise ValueError('Too many source redirects.')
 
     async def fetch(self, url):
@@ -168,9 +185,40 @@ def extract(data, content_type):
     return [text], parser.links
 
 
+def extract_cached(data, content_type):
+    """Reuse hash-checked parsing, independently of the live HTTP freshness check."""
+    from importlib.metadata import version
+    from backend import source_cache
+    token=hashlib.sha256(PARSER_CODE_HASH+
+        f'{version("pypdf")}:{MAX_PAGES}:{MAX_TEXT}:{content_type}'.encode()+
+        hashlib.sha256(data).digest()).hexdigest()
+    target=source_cache.root()/'parsed'/(token+'.json')
+    try:
+        if target.stat().st_size<=16_000_000:
+            envelope=json.loads(target.read_text(encoding='utf-8'))
+            payload=envelope['payload']
+            encoded=json.dumps(payload,ensure_ascii=False,sort_keys=True).encode()
+            pages,links=payload['pages'],payload['links']
+            if (source_cache.digest(encoded)==envelope['sha256']
+                    and isinstance(pages,list) and 0<len(pages)<=MAX_PAGES
+                    and all(isinstance(p,str) for p in pages) and sum(map(len,pages))<=MAX_TEXT
+                    and sum(len(p.strip()) for p in pages)>=80
+                    and isinstance(links,list) and all(isinstance(x,list) and len(x)==2
+                        and all(isinstance(s,str) for s in x) for x in links)):
+                return pages,[tuple(x) for x in links]
+    except (OSError,ValueError,KeyError,TypeError):
+        pass
+    pages,links=extract(data,content_type)
+    payload={'pages':pages,'links':links}
+    encoded=json.dumps(payload,ensure_ascii=False,sort_keys=True).encode()
+    if len(encoded)<=15_000_000:
+        source_cache.atomic(target,json.dumps({'payload':payload,'sha256':source_cache.digest(encoded)},ensure_ascii=False).encode())
+    return pages,links
+
+
 def save_document(company, url, title, data, content_type, publication_date=None, *, extracted_pages=None):
     if extracted_pages is None:
-        pages, _ = extract(data, content_type)
+        pages, _ = extract_cached(data, content_type)
     else:
         # Used only by bounded local-PDF fallback, never taken from API inputs.
         pages = extracted_pages
@@ -221,7 +269,7 @@ async def discover(profile, limit=4, log=None):
     for seed in profile.seeds[:2]:
         try:
             data, kind, original = await fetcher.fetch(seed)
-            _, links = extract(data, kind)
+            _, links = await asyncio.to_thread(extract_cached, data, kind)
             for href, title in links:
                 try:
                     url = allowed_url(urljoin(original, href), profile.domains)
@@ -238,7 +286,7 @@ async def discover(profile, limit=4, log=None):
     for url, title in [x for x in ranked if '.pdf' not in x[0].lower() and x[0] not in profile.seeds][:2]:
         try:
             data, kind, original = await fetcher.fetch(url)
-            _, links = extract(data, kind)
+            _, links = await asyncio.to_thread(extract_cached, data, kind)
             for href, label in links:
                 target = urljoin(original, href)
                 if '.pdf' in target.lower():

@@ -10,6 +10,8 @@ competing explanations. Valuation is a cross-check, not proof of a discovery.
 [Round 1 solution report](docs/123_TrackC_Round1.pdf) ·
 [Reproduction requirements and limits](docs/REPRODUCIBILITY.md)
 
+[Next-phase progress: incremental source refresh](docs/NEXT_PHASE.md)
+
 ## Demonstration
 
 The working demonstration runs locally on Windows at `http://127.0.0.1:8000`.
