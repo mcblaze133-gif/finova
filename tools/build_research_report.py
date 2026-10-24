@@ -336,6 +336,12 @@ def build(data,target):
         for lead in leads[:8]:story.append(link(lead.get('headline','News lead')+' ('+str(lead.get('published_at','date unavailable'))+')',lead.get('url'),'small'))
     if news.get('status')!='assessed':body('The current news review is incomplete or contains unverified sources. Recent-event coverage does not support an unqualified final conclusion.')
 
+    for review in data.get('source_reviews',[]):
+        sub('Documentary source cross-check')
+        refs=[source(ref['sha256'],ref['title'],'http://127.0.0.1:8000'+ref['url'],str(ref['page'])) for ref in review['sources']]
+        story.append(referenced_paragraph(review['finding'],refs))
+        body(review['meaning']);note(review['verification'])
+
     section('06  Valuation overview and triangulation')
     body('Each method uses the company-specific assumptions and reporting basis shown in the Excel model. Methods with insufficient inputs or unsuitable economics are excluded; their reasons appear in Appendix C.')
     rows=[['Method','Bear / share','Base / share','Bull / share','Treatment']]
@@ -388,6 +394,25 @@ def build(data,target):
                          fmt(m.get('cash_conversion'),'multiple'),fmt(m.get('capex_ratio'),'pct')])
         story.append(table(rows,[180]+[(CONTENT-180)/4]*4))
         note('Source: saved Excel Sector comparison formulas and reviewed historical inputs. Reported figures are not normalised earnings. Missing comparable capex or history is left unavailable. No peer-backed valuation weight has been assigned.')
+    peers=data.get('peer_valuation') or {}
+    if peers:
+        sub('Reviewed historical peer valuation cross-check')
+        body('Common market close: '+peers['price_date']+'. All earnings cover FY2026 ended 31 March 2026. '+peers['meaning'])
+        body(peers['policy']['rationale'])
+        rows=[['Company / selection','Reported P/E','Adjusted P/E','EV/EBITDA']]
+        for peer in peers['companies']:
+            refs=[source(ref['sha256'],ref['title'],'http://127.0.0.1:8000'+ref['url'],str(ref['page'])) for ref in peer['sources']]
+            m=peer['metrics'];label=peer['company']+(' / subject' if peer['subject'] else ' / selected' if peer['included'] else ' / excluded')
+            rows.append([referenced_paragraph(label,sorted(set(refs)),'cell'),fmt(m.get('reported_pe'),'multiple'),fmt(m.get('adjusted_pe'),'multiple'),fmt(m.get('ev_ebitda'),'multiple')])
+        story.append(table(rows,[200]+[(CONTENT-200)/3]*3))
+        ranges=[['Subject value / share','Low','Midpoint','High']]
+        for key,label in [('pe','Adjusted historical P/E'),('ev_ebitda','Historical EV/EBITDA')]:
+            item=peers['ranges'][key];ranges.append([label]+[fmt(item.get(k),'price') for k in ('low','midpoint','high')])
+        story.append(table(ranges))
+        body('Investor use: compare the subject with the selected peer range, then test whether growth, returns, category mix and leverage justify a premium or discount. The midpoint is a range reference, not a recommended target. At least two usable peers are required. These historical cross-checks carry no automatic weight in the intrinsic valuation range.')
+        note('EV uses a narrow financial bridge: market capitalisation plus borrowings, leases and minority interests, less cash equivalents. Strategic investments and pension/other senior claims are excluded by this comparison policy, not established as zero. A missing bridge remains unavailable. Tax and ownership allocations are analyst proxies; Excel exposes inputs, normalisation and five-multiple statistics.')
+        for peer in peers['companies']:
+            if peer['subject'] or peer['included']:body(peer['company']+': '+peer['normalisation_note'])
     if weighted:
         sub('Reconciled conditional range')
         body('Bear '+fmt(weighted['bear'],'price')+'; base '+fmt(weighted['base'],'price')+'; bull '+fmt(weighted['bull'],'price')+' per share. Weights reflect the selected methods, not a mechanical average of every available formula.')

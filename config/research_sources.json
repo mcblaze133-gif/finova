@@ -1,0 +1,56 @@
+{
+  "britannia": [
+    {
+      "url": "https://www.crisil.com/mnt/winshare/Ratings/RatingList/RatingDocs/BritanniaIndustriesLimited_October%2006_%202026_RR_405822.html",
+      "title": "Crisil Britannia credit rationale, 6 October 2026",
+      "publication_date": "2026-10-06",
+      "publisher": "Crisil Ratings",
+      "role": "External credit opinion; issuer financial information may be reused"
+    },
+    {
+      "url": "https://ccpa.doca.gov.in/checkuploaddocs.php?updocs=./uploads/27cb95e6aec3624a25e83076bbb5246fd5ccb2d123be679b3cd24acba9b3070a.pdf",
+      "title": "CCPA Britannia order, 22 October 2026 (selected visually reviewed passages)",
+      "publication_date": "2026-10-22",
+      "publisher": "Central Consumer Protection Authority",
+      "role": "Primary regulator order; visual transcription of selected passages; investment impact and subsequent appeal status not verified",
+      "reviewed_transcript": true,
+      "kind": "regulatory"
+    }
+  ],
+  "hul": [
+    {
+      "url": "https://www.hul.co.in/files/hul-credit-rating-2023.pdf",
+      "title": "Crisil HUL credit rationale, 3 October 2025 (issuer-hosted copy)",
+      "publication_date": "2025-10-03",
+      "publisher": "Crisil Ratings, hosted by issuer",
+      "role": "Historical external credit opinion; issuer-hosted copy is not a second independent financial observation"
+    }
+  ],
+  "itc": [
+    {
+      "url": "https://www.crisilratings.com/mnt/winshare/Ratings/RatingList/RatingDocs/ITCLimited_April%2024_%202026_RR_394279.html",
+      "title": "Crisil ITC credit rationale, 24 April 2026",
+      "publication_date": "2026-04-24",
+      "publisher": "Crisil Ratings",
+      "role": "External credit opinion; annexure ownership labels require reconciliation with issuer filings"
+    }
+  ],
+  "nestle-india": [
+    {
+      "url": "https://www.crisilratings.com/mnt/winshare/Ratings/RatingList/RatingDocs/NestleIndiaLimited_June%2024_%202026_RR_397976.html",
+      "title": "Crisil Nestle India credit rationale, 24 June 2026",
+      "publication_date": "2026-06-24",
+      "publisher": "Crisil Ratings",
+      "role": "External credit opinion; issuer financial information may be reused"
+    }
+  ],
+  "tata-consumer": [
+    {
+      "url": "https://www.icra.in/Rating/GetRationalReportFilePdf?id=142817",
+      "title": "ICRA Tata Consumer credit rationale, 30 April 2026",
+      "publication_date": "2026-04-30",
+      "publisher": "ICRA",
+      "role": "External credit opinion; distinguish nine-month FY2026 observations from subsequent full-year figures"
+    }
+  ]
+}

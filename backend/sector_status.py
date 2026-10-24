@@ -35,6 +35,7 @@ def build():
                 unresolved_areas=[a['area'] for a in p.get('coverage',{}).get('areas',[]) if a.get('status')!='complete'],
                 history_periods=len(p.get('history',{}).get('periods',[])),
                 operating_benchmark_rows=len((p.get('sector_comparison') or {}).get('rows',[])),
+                peer_valuation_available=bool(p.get('peer_valuation')),
                 verified_discoveries=findings.get('verified_discoveries',0),news_checked_at=(p.get('news') or {}).get('checked_at'),
                 report_url=f'/#report-{rid}',pdf_url=f'/analysis-reports/{rid}/pdf',excel_url=f'/excel/exports/{job["export_id"]}',
                 verification_url=f'/analysis-reports/{rid}/verification/view')

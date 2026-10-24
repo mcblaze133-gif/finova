@@ -92,6 +92,9 @@ async def complete(payload,run_id):
    found=storage.rows('SELECT p.id,p.document_id,p.pdf_page,p.text,d.company,d.title,d.original_url,d.publication_date,d.sha256 FROM passages p JOIN documents d ON d.id=p.document_id WHERE p.id=? AND d.company=?',(pid,payload['company_id']))
    rows.extend(found)
   selected,searches=selected_passages(rows)
+  from backend import public_sources
+  external=public_sources.passages(raw.get('registered_source_refresh',{}),'competition market position margins demand capital risks outlook',6)
+  selected.extend(external)
   from backend import scope_events
   events=await asyncio.to_thread(scope_events.load,payload['company_id'])
   selected=list({p['id']:p for p in [*selected,*[e['passage'] for e in events]]}.values())

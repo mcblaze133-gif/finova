@@ -210,6 +210,11 @@ def evidence_gate(analysis, review, passages, calculations, audit):
         host=(urlsplit(row['original_url']).hostname or '').casefold()
         owner=next((p.id for p in companies if any(host==d or host.endswith('.'+d) for d in p.domains)),None)
         key='company:'+owner if owner else 'publisher:'+host.removeprefix('www.')
+        # An external credit opinion can reuse issuer figures. Until the cited
+        # assertion's underlying origin is reviewed, do not count it as a second
+        # independent financial observation merely because its host differs.
+        if 'credit opinion' in str(row.get('source_role','')).casefold():
+            key='company:'+row.get('company','unknown')
         # Local files retain their subject's origin; a filename is not an independent source.
         if not host:key='company:'+row.get('company','unknown')
         origins.setdefault(key,set()).add(row.get('sha256') or row['document_id'])

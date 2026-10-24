@@ -216,7 +216,9 @@ def extract_cached(data, content_type):
     return pages,links
 
 
-def save_document(company, url, title, data, content_type, publication_date=None, *, extracted_pages=None):
+def save_document(company, url, title, data, content_type, publication_date=None, *, extracted_pages=None,extraction_method=None):
+    if extraction_method is not None and (extracted_pages is None or extraction_method!='manual-visual-transcription'):
+        raise ValueError('Unsupported explicit extraction method.')
     if extracted_pages is None:
         pages, _ = extract_cached(data, content_type)
     else:
@@ -244,7 +246,7 @@ def save_document(company, url, title, data, content_type, publication_date=None
     processed = storage.DATA_DIR / 'processed'
     processed.mkdir(parents=True, exist_ok=True)
     (processed / (digest + '.json')).write_text(json.dumps({'sha256': digest, 'pages': pages,
-        'extraction_method': 'local-bounded-fallback' if extracted_pages is not None else 'pypdf-layout'}, ensure_ascii=False), encoding='utf-8')
+        'extraction_method': extraction_method or ('local-bounded-fallback' if extracted_pages is not None else 'pypdf-layout')}, ensure_ascii=False), encoding='utf-8')
     return document_id
 
 

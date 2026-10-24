@@ -1,14 +1,14 @@
 {
-  "as_of": "2026-10-19",
+  "as_of": "2026-10-23",
   "market": {
     "debt": 4441600000.0,
     "cash": 13205700000.0,
     "nci": 0.0,
     "preferred": 0.0,
     "nonoperating_assets": 5509900000.0,
-    "price": 1265.5,
-    "price_date": "2026-10-16",
-    "valuation_date": "2026-10-19",
+    "price": 1175.0,
+    "price_date": "2026-10-23",
+    "valuation_date": "2026-10-23",
     "current_shares": 1928314320,
     "diluted_shares": 1928314320,
     "shares_date": "2026-03-31",
@@ -18,7 +18,7 @@
     "other_senior_claims": 20898300000,
     "interim_dividends": 9641571600,
     "lease_policy": "Borrowings and lease liabilities deducted once, with post-Ind AS116 operating EBITDA. Renewal-lease capex requires review.",
-    "quote_source": "NSE India home market display,16-Oct-2026 close, accessed19-Oct-2026. https://www.nseindia.com/ . Not a live19-Oct quote."
+    "quote_source": "NSE EQ closing-price CSV and NSE rendered quote capture, 23 October 2026. Reviewed references appear in Peer valuation."
   },
   "methods": [
     {

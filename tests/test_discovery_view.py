@@ -17,6 +17,19 @@ def fixture():
 
 
 class DiscoveryViewTests(unittest.TestCase):
+    def test_section_excerpt_is_not_lost_when_discovery_uses_another_page_window(self):
+        data=fixture();original=data['research']['passages'][0].copy()
+        data['research']['section_analysis']={'passage_catalog':[original]}
+        data['research']['passages'][0]['text']='Different exact window from the same source page.'
+        result=view.build(data)
+        self.assertEqual(len(result['cards']),1);self.assertEqual(len(result['business']),1)
+
+    def test_conflicting_document_identity_for_one_passage_fails_closed(self):
+        data=fixture();other=data['research']['passages'][0]|{'document_id':99}
+        data['research']['section_analysis']={'passage_catalog':[other]}
+        result=view.build(data)
+        self.assertEqual(result['cards'],[]);self.assertEqual(result['business'],[])
+
     def test_every_published_claim_has_a_page_link_and_explicit_verification(self):
         data=view.build(fixture())
         self.assertEqual(len(data['cards']),1)

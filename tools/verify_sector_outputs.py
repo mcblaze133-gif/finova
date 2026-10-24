@@ -28,6 +28,45 @@ def check_metrics(peer,cells,index):
         assert peer['metrics'][metric]==actual,'PDF/website metric differs from saved Excel result'
 
 
+def check_valuation_peers(payload,workbook):
+    peers=payload.get('peer_valuation')
+    assert peers,'Reviewed comparison missing from new report'
+    cells=workbook['Peer valuation'];selected=[]
+    for r,item in enumerate(peers['companies'],21):
+        v=item['values'];tax=v['tax']/v['pbt']
+        expected=(v['pat']-v['exceptional_credit']*(1-tax)*item['owner_allocation']-
+                  v['oneoff_tax_credit']*item['owner_allocation'])/1e7
+        assert math.isclose(cells[f'AB{r}'],expected,abs_tol=1e-6)
+        assert math.isclose(item['metrics']['adjusted_pe'],v['market_cap']/(expected*1e7),rel_tol=1e-10)
+        assert cells[f'D{r}']==('Yes' if item['included'] else 'No')
+        assert not(item['subject'] and item['included'])
+        if item['included']:selected.append(item)
+        raw_ebitda=v['ebitda']
+        if raw_ebitda is None:raw_ebitda=v['pbt']-v['exceptional_credit']+v['finance_cost']+v['da']-v['other_income']
+        assert math.isclose(cells[f'AA{r}'],(raw_ebitda+v['ebitda_addback'])/1e7,abs_tol=1e-6)
+        bridge=('market_cap','debt','nci','preferred','other_claims','cash','nonoperating_assets')
+        if all(isinstance(v.get(k),(int,float)) for k in bridge):
+            ev=(v['market_cap']+v['debt']+v['nci']+v['preferred']+v['other_claims']-v['cash']-v['nonoperating_assets'])/1e7
+            assert math.isclose(cells[f'AC{r}'],ev,abs_tol=1e-6)
+            assert math.isclose(item['metrics']['ev_ebitda'],ev/cells[f'AA{r}'],rel_tol=1e-10)
+        else:assert item['metrics']['ev_ebitda']=='n.a.'
+    subject=next((r,item) for r,item in enumerate(peers['companies'],21) if item['subject'])
+    sr,subject=subject;shares=subject['values']['shares']
+    for key,metric,anchor,output in [('pe','adjusted_pe',11,6),('ev_ebitda','ev_ebitda',12,7)]:
+        values=[p['metrics'][metric] for p in selected if isinstance(p['metrics'][metric],(int,float))]
+        assert cells[f'G{anchor}']==len(values)
+        result=peers['ranges'][key]
+        if len(values)<2:assert result['low']==result['midpoint']==result['high']=='n.a.'
+        else:
+            assert math.isclose(cells[f'D{anchor}'],min(values),rel_tol=1e-10)
+            assert math.isclose(cells[f'F{anchor}'],max(values),rel_tol=1e-10)
+            assert all(result[name]==cells[f'{col}{output}'] for name,col in [('low','D'),('midpoint','E'),('high','F')])
+            for name,multiple in [('low',min(values)),('midpoint',(min(values)+max(values))/2),('high',max(values))]:
+                expected=(multiple*cells[f'AB{sr}'] if key=='pe' else multiple*cells[f'AA{sr}']-(cells[f'AC{sr}']-subject['values']['market_cap']/1e7))*1e7/shares
+                assert math.isclose(result[name],expected,rel_tol=1e-10)
+    if payload['company_id']=='itc':assert not selected and payload['source_reviews']
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--audit',type=Path,required=True);args=parser.parse_args()
     data=json.loads(args.audit.read_text(encoding='utf-8'))
@@ -48,9 +87,11 @@ def main():
             assert sum(bool(p['subject']) for p in peer_data['rows'])==1
             assert next(p['company_id'] for p in peer_data['rows'] if p['subject'])==entry['company']
             for index,peer in enumerate(peer_data['rows'],6):check_metrics(peer,workbook['Sector comparison'],index)
+            check_valuation_peers(payload,workbook)
             findings=client.get(f"/analysis-reports/{entry['report_id']}/findings").raise_for_status().json()
             assert findings['company_id']==entry['company'] and findings['report_id']==entry['report_id']
             assert len(findings['sector_comparison']['rows'])==len(expected)
+            assert findings['peer_valuation']==payload['peer_valuation']
             cards=[*findings['cards'],*findings['business'],*findings['updates']]
             assert cards and all(c['sources'] and c['verification_label'] and not c['verified'] for c in cards)
             for peer in findings['sector_comparison']['rows']:
@@ -64,6 +105,7 @@ def main():
             print(entry['company'],'exact report / Excel / PDF / source checks passed',flush=True)
     path=storage.PROJECT_DIR/'reports/sector-output-verification.json'
     path.write_text(json.dumps({'checked_at':storage.now(),'audit':str(args.audit),'companies':checks},indent=2),encoding='utf-8')
+    args.audit.write_text(json.dumps(data,indent=2),encoding='utf-8')
 
 
 if __name__=='__main__':main()

@@ -162,13 +162,14 @@ def validate_assessment(assessment, grounded, baseline, previous=()):
         cited_ids = {i for e in event.evidence for i in lookup[e.block_id]['source_ids']}
         cited_sources = [s for s in grounded['sources'] if s['source_id'] in cited_ids]
         primary_only = bool(cited_sources) and all(s.get('source_kind') == 'primary_company_disclosure' for s in cited_sources)
-        original_only = bool(cited_sources) and all(s.get('source_kind') in ('primary_company_disclosure','original_news_article') for s in cited_sources)
+        regulatory_only=bool(cited_sources) and all(s.get('source_kind')=='primary_regulatory_document' for s in cited_sources)
+        original_only = bool(cited_sources) and all(s.get('source_kind') in ('primary_company_disclosure','original_news_article','primary_regulatory_document') for s in cited_sources)
         headline_only = grounded.get('source_kind') in ('news_feed_headlines','primary_pages_and_news_headlines') and not original_only
         if headline_only:
             payload['confidence'] = 'low'
         payload.update(event_key=key, novelty=('previously_tracked' if key in known else 'possible_overlap_with_local_pack' if overlap else 'not_matched_to_local_pack_requires_review'),
                        source_ids=sorted({i for e in event.evidence for i in lookup[e.block_id]['source_ids']}),
-                       fact_status='company_disclosure_not_independently_corroborated' if primary_only else 'original_report_underlying_claim_not_independently_verified' if original_only else 'unverified_headline_claim' if headline_only else 'search_grounded_not_independently_verified',
+                       fact_status='regulator_document_retrieved_impact_and_appeal_status_not_verified' if regulatory_only else 'company_disclosure_not_independently_corroborated' if primary_only else 'original_report_underlying_claim_not_independently_verified' if original_only else 'unverified_headline_claim' if headline_only else 'search_grounded_not_independently_verified',
                        interpretation_status='analyst inference', quantitative_treatment='Review linked assumptions; no automatic numerical change.')
         if payload['exposure_basis'] == 'possible_exposure_requires_verification':
             payload['confidence'] = 'low'

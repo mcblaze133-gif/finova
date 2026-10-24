@@ -3,6 +3,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import { Workbook, SpreadsheetFile } from '@oai/artifact-tool';
 import { buildSectorComparison } from './sector_comparison.mjs';
+import { buildPeerValuation } from './peer_valuation.mjs';
 
 const args=process.argv.slice(2), option=k=>args[args.indexOf(k)+1];
 const input=JSON.parse(await fs.readFile(option('--input'),'utf8'));
@@ -14,6 +15,7 @@ const names=['Dashboard','Assumptions','Bear','Base','Bull','Multiple policy','P
 if(input.research_notes?.length)names.splice(5,0,'Research');
 if(input.historical_statements?.periods?.length)names.splice(1,0,'Statement history');
 if(input.sector_comparison?.rows?.length>1)names.splice(1,0,'Sector comparison');
+if(input.peer_valuation)names.splice(1,0,'Peer valuation');
 const sheets=Object.fromEntries(names.map(n=>[n,wb.worksheets.add(n)]));
 const ink='#172F48', teal='#12695C', blue='#0000FF', green='#008000', light='#EDF3F6', amber='#FFF1CD';
 const amount='#,##0;(#,##0);"-"', pct='0.0%;(0.0%);"-"', price='"₹"#,##0.00;("₹"#,##0.00);"-"';
@@ -141,6 +143,7 @@ input.drivers.forEach((d,i)=>block('Drivers',`C${15+i}`,[[d.driver,d.source_type
 if(input.drivers.length){sheets.Drivers.getRange('D:D').format.columnWidth=26;sheets.Drivers.getRange('F:F').format.columnWidth=82;sheets.Drivers.getRange(`C15:F${14+input.drivers.length}`).format.wrapText=true;sheets.Drivers.getRange(`C15:F${14+input.drivers.length}`).format.rowHeight=38;}
 
 buildSectorComparison(input,{sheets,title,block,put,form,ready,nativeLink,ink,blue,pct});
+buildPeerValuation(input,{sheets,title,block,put,form,ready,nativeLink,ink,blue,pct});
 
 // Peer normalization and matching-period exclusions are visible to the analyst.
 title('Peers','Comparable company analysis','Include only reviewed comparable observations with a consistent valuation date and financial period.');
@@ -526,6 +529,22 @@ if(sheets['Sector comparison']){
  }
  verification.fixtureChecks.push('Sector operating comparison live source sensitivity');
 }
+if(sheets['Peer valuation']){
+ const s='Peer valuation',rows=input.peer_valuation.companies;
+ for(const [i,row] of rows.entries()){
+  const r=21+i,v=row.values,tax=v.tax/v.pbt;
+  const adjusted=(v.pat-v.exceptional_credit*(1-tax)*row.owner_allocation-v.oneoff_tax_credit*row.owner_allocation)/1e7;
+  assert.ok(Math.abs(num(s,`AB${r}`)-adjusted)<1e-6,'Independent normalised PAT check');
+  if(row.subject)assert.equal(sheets[s].getRange(`D${r}`).values[0][0],'No','Subject cannot anchor its own valuation');
+ }
+ const i=rows.findIndex(x=>x.included),r=21+i;
+ if(i>=0){const before=num(s,`AE${r}`),source=sheets[s].getRange(`F${r}`).values;
+  put(s,`F${r}`,source[0][0]*1.1);wb.recalculate();
+  assert.ok(Math.abs(num(s,`AE${r}`)-before*1.1)<1e-8,'Market cap changes peer P/E live');
+  sheets[s].getRange(`F${r}`).values=source;wb.recalculate();assert.equal(num(s,`AE${r}`),before);
+ }
+ verification.fixtureChecks.push('Peer normalisation independent arithmetic','Subject excluded from peer anchors','Live peer market-cap sensitivity');
+}
 if(input.sources.length){
  for(const s of ['Bear','Base','Bull'])assert.ok(Number.isFinite(num(s,'G66'))&&num(s,'G66')>0,'Populated company DCF must calculate: '+s);
  block('Dashboard','K54',[['Case','DCF per share']]);
@@ -578,7 +597,7 @@ const finalScan=await wb.inspect({kind:'match',searchTerm:'#REF!|#DIV/0!|#VALUE!
 await fs.writeFile(path.join(out,'formula-scan.json'),finalScan.ndjson);
 assert.ok(!finalScan.ndjson.includes('"kind":"match"'),'Workbook contains spreadsheet errors');
 await fs.writeFile(path.join(out,'verification.json'),JSON.stringify(verification,null,2));
-for(const name of names){if(args.includes('--focused-previews')&&!['Dashboard','Financials','Statement history','Sector comparison'].includes(name))continue;const range=name==='Sector comparison'?'C2:J15':name==='Assumptions'?'C2:P15':name==='Guide'?'C2:D17':name==='Dashboard'?'C2:Q51':name==='Research'?'C2:E17':name==='Peers'?'C2:J12':name==='Multiple policy'?'C2:N13':name==='Transactions'?'C2:L12':name==='Sources'?'C2:J12':name==='Segments'&&input.segments?.length?'C2:N33':name==='Segments'?'C2:M12':name==='Checks'?'C2:E14':name==='NAV'?'C2:I12':name==='Statement history'?`C2:${col(2+input.historical_statements.periods.length)}33`:name==='Financials'?'C2:I38':name==='Market'?'C2:F25':name==='Methods'?'C2:H20':name==='Drivers'?'C2:H17':'C2:I20';
+for(const name of names){if(args.includes('--focused-previews')&&!['Dashboard','Financials','Statement history','Sector comparison','Peer valuation'].includes(name))continue;const range=name==='Peer valuation'?'C2:K18':name==='Sector comparison'?'C2:J15':name==='Assumptions'?'C2:P15':name==='Guide'?'C2:D17':name==='Dashboard'?'C2:Q51':name==='Research'?'C2:E17':name==='Peers'?'C2:J12':name==='Multiple policy'?'C2:N13':name==='Transactions'?'C2:L12':name==='Sources'?'C2:J12':name==='Segments'&&input.segments?.length?'C2:N33':name==='Segments'?'C2:M12':name==='Checks'?'C2:E14':name==='NAV'?'C2:I12':name==='Statement history'?`C2:${col(2+input.historical_statements.periods.length)}33`:name==='Financials'?'C2:I38':name==='Market'?'C2:F25':name==='Methods'?'C2:H20':name==='Drivers'?'C2:H17':'C2:I20';
  const blob=await wb.render({sheetName:name,range,scale:1,format:'png'});await fs.writeFile(path.join(out,'preview-'+name.replaceAll(' ','-')+'.png'),new Uint8Array(await blob.arrayBuffer()));}
 if(input.sources.length){for(const [label,sheetName,range] of [['Base-results','Base','C45:J95'],['Base-sensitivity','Base','K6:P23'],['Market-bridge','Market','C22:K40']]){const blob=await wb.render({sheetName,range,scale:1,format:'png'});await fs.writeFile(path.join(out,'preview-'+label+'.png'),new Uint8Array(await blob.arrayBuffer()));}}
 if(input.research_report){

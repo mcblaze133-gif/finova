@@ -54,7 +54,7 @@ async def main(companies,reassess):
             payload=ar.snapshot(company,job['research_run_id'],export['id'],job['id'])
             payload['targeted_research']=old.get('targeted_research',{})
             payload['coverage']=research_gaps.report_coverage(payload)
-            payload['revision_note']='Evidence/operating-comparison correction. Financial assumptions and values are unchanged. The online check retains its stated earlier date; this revision did not run a new news search.'
+            payload['revision_note']='Reviewed peer and operating evidence updated. Main financial assumptions and scenario values are unchanged. The online check retains its stated earlier date; this revision did not run a new news search.'
             payload['revision_id']=revision
             folder=storage.PROJECT_DIR/'outputs'/job['id']/('revision-'+revision);folder.mkdir(parents=True)
             pdf=await ar.make_pdf(folder,payload)

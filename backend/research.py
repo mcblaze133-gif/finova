@@ -110,7 +110,8 @@ def safe_passages(rows, budget=30000, per_passage_limit=6500):
                        'original_url': row['original_url'], 'title':row.get('title','Source document'),
                        'sha256':row.get('sha256'), 'company':row.get('company'),
                        'period_sort_hint_unverified':row.get('period_sort_hint_unverified'),
-                       'document_kind':row.get('document_kind')})
+                       'document_kind':row.get('document_kind'),'source_role':row.get('source_role'),
+                       'publisher':row.get('publisher')})
         used += len(text)
     return result
 
@@ -319,8 +320,13 @@ async def execute(run_id):
             # historical-cutoff analysis. Missing dates are visible in the report.
             historical = request.evidence_cutoff < storage.today_ist()
             cutoff = request.evidence_cutoff.isoformat() if historical else None
+            from backend import public_sources
+            source_refresh=await public_sources.refresh(profile.id,request.evidence_cutoff) if request.force_fresh and request.refresh else {'sources':[]}
+            report['registered_source_refresh']=source_refresh
             from backend import investigation
             rows = investigation.search_prepared(prepared,'revenue profit cash inventory receivables volume margin consolidated guidance outlook',12) if prepared is not None else documents.search(profile.id, 'revenue profit cash inventory receivables volume stores margin consolidated', 10, cutoff)
+            public_rows=public_sources.passages(source_refresh,'market competition margin demand growth risks',4)
+            rows+=public_rows
             passages = safe_passages(rows,per_passage_limit=2200) if prepared is not None else safe_passages(rows)
             report['passages'] = passages
             if any(not p['publication_date'] for p in all_sources):
@@ -333,6 +339,12 @@ async def execute(run_id):
             from backend import investigation
             targeted,audit,peer_ids = await investigation.collect(profile,plan.hypotheses,cutoff,request.refresh and not historical,run_id,prepared=prepared) if prepared is not None else await investigation.collect(profile,plan.hypotheses,cutoff,request.refresh and not historical,run_id)
             report['research_plan_execution']=audit
+            for public in public_rows:
+                if public['id'] not in {p['id'] for p in targeted}:targeted.append(public)
+            if public_rows:
+                audit.append({'question':'Registered external opinion cross-check','side':'context','query':'competition, input costs, scope and capital risks','local_passages':[],
+                    'originals':[{'document_id':s['document_id'],'url':s['url'],'status':'original_read','role':s['role']} for s in source_refresh['sources'] if s.get('status')=='original_read'],
+                    'coverage':'Registered originals refreshed; credit opinions may reuse issuer information.'})
             seen={p['id'] for p in targeted}
             candidates=targeted+[p for p in rows if p['id'] not in seen]
             if prepared is not None:
@@ -345,7 +357,7 @@ async def execute(run_id):
                 chosen=[p for p in subject if p['id'] in required]
                 chosen_ids={p['id'] for p in chosen}
                 chosen += [p for p in investigation.balance_prepared(subject,12) if p['id'] not in chosen_ids]
-                candidates=chosen+other[:4]
+                candidates=list({p['id']:p for p in [*chosen,*public_rows,*other[:4]]}.values())
                 passages=safe_passages(candidates,35000,per_passage_limit=min(3500,35000//max(1,len(candidates))))
                 report['historical_evidence_selection']={
                     'policy':'Period-diverse question-directed excerpts; supporting and opposing queries are retained. This is not an exhaustive reading or a verified financial history.',

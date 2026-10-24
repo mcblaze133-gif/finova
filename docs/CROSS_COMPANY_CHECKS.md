@@ -171,3 +171,40 @@ authentication/quota errors and invalid structured responses are not retried.
 Section calls use a 50-second request timeout to leave room for that retry
 inside their existing 120-second outer budget. Persistent failures remain
 visible and do not substitute old analysis.
+
+
+## 25 October: reviewed historical peer cross-checks
+
+Six new website investigations produced the selected five-company report set;
+Britannia was investigated again after retrieval and visual review of the
+original CCPA order. All five selected reports passed exact identity, source
+link, PDF delivery and independent Excel arithmetic checks. The application
+then issued labelled evidence revisions to incorporate Marico's separately
+retrieved audited NSE balance sheet. These revisions preserve the main financial
+assumptions, scenario results and original news-check times. Earlier files and
+report rows are backed up rather than silently replaced as fresh research.
+
+The comparison now includes seven companies, with subject-specific selection,
+reported and adjusted P/E, five multiple statistics, editable inputs and
+historical valuation ranges where at least two suitable observations exist.
+ITC has no approved whole-group food-company basket. Comparisons retain zero
+automatic weight: category/growth/quality judgments and the limited EV bridge
+remain material qualifications. See [peer valuation scope](PEER_VALUATION.md).
+
+The offline suite contains 272 passing tests. Tests cover source/transcript
+identity and tampering, reporting-period compatibility, basic share-count
+reconciliation, subject exclusion, source-role preservation and documentary
+versus investment-impact verification. Each workbook preserves three native
+What-If tables; saved formula error scans and independent forecast/bridge
+checks pass. Native desktop Excel recalculation is still not certified.
+
+The website now retains both frozen excerpt catalogs used by discovery and
+operating-section analysis. All five selected reports display six source-linked
+business cards with no claims withheld because one excerpt window overwrote
+another. Conflicting source identities still fail closed. Exact quotation
+matches remain distinct from independent verification of an economic thesis.
+
+Some operating topics, competition evidence and current developments remain
+partial. No independently verified investment discovery is claimed. Retrieval
+of a primary regulatory order verifies its stated directions, not a subsequent
+appeal outcome or a quantified financial effect.

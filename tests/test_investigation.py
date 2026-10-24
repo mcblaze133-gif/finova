@@ -61,6 +61,20 @@ class InvestigationTests(AuditFixture,unittest.IsolatedAsyncioTestCase):
         args[2][1]['original_url']='https://www.hul.co.in/another-release'
         self.assertEqual(investigation.evidence_gate(*args)['distinct_content_origins'],1)
 
+    async def test_credit_opinion_reusing_issuer_figures_is_not_second_financial_origin(self):
+        args=self.candidate();args[2][1]['source_role']='External credit opinion; issuer financial information may be reused'
+        gate=investigation.evidence_gate(*args)
+        self.assertEqual(gate['distinct_content_origins'],1);self.assertFalse(gate['admitted'])
+
+    async def test_regulator_is_a_distinct_candidate_origin_not_issuer_credit_data(self):
+        args=self.candidate();args[2][1]['source_role']='Primary regulator order; investment impact not verified'
+        self.assertEqual(investigation.evidence_gate(*args)['distinct_content_origins'],2)
+
+    async def test_external_context_does_not_substitute_for_opposing_search(self):
+        args=self.candidate()
+        for item in args[4]:item['side']='context'
+        self.assertFalse(investigation.evidence_gate(*args)['admitted'])
+
     async def test_missing_timeline_or_unlinked_calculation_prevents_admission(self):
         args=self.candidate()
         args[0].timeline=[]

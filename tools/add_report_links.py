@@ -17,7 +17,7 @@ def apply(path,manifest):
  wb=E.fromstring(data['xl/workbook.xml']);rels={n.get('Id'):n.get('Target') for n in E.fromstring(data['xl/_rels/workbook.xml.rels'])}
  sheets={n.get('name'):(rels[n.get('{'+R+'}id')].lstrip('/') if rels[n.get('{'+R+'}id')].startswith('/') else 'xl/'+rels[n.get('{'+R+'}id')]) for n in wb.findall('{'+S+'}sheets/{'+S+'}sheet')}
  for name in {l['sheet'] for l in links}:
-  if name not in ('Dashboard','Research','Sources','Sector comparison'):raise ValueError('Unexpected hyperlink sheet.')
+  if name not in ('Dashboard','Research','Sources','Sector comparison','Peer valuation'):raise ValueError('Unexpected hyperlink sheet.')
   sheetpath=sheets[name];root=E.fromstring(data[sheetpath]);before=E.tostring(root.find('{'+S+'}sheetData'))
   relpath=str(Path(sheetpath).parent/'_rels'/(Path(sheetpath).name+'.rels')).replace('\\','/')
   relationships=E.fromstring(data[relpath]) if relpath in data else E.Element('{'+P+'}Relationships')

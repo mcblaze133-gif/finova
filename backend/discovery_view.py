@@ -28,7 +28,12 @@ def normal(value):
 
 def build(payload):
     raw = payload.get('research') or {}
-    lookup = {p['id']:p for p in raw.get('passages', [])}
+    # Discovery and operating sections can use different exact windows from
+    # the same archived page. Preserve both frozen catalogs; a dict overwrite
+    # must not hide valid section citations or substitute a different document.
+    lookup={}
+    for p in [*raw.get('passages',[]),*raw.get('section_analysis',{}).get('passage_catalog',[])]:
+        lookup.setdefault(p['id'],[]).append(p)
     omitted = 0
 
     def cited(item):
@@ -36,9 +41,13 @@ def build(payload):
             return None
         sources = []
         for citation in item['citations']:
-            p = lookup.get(citation.get('passage_id'))
+            candidates=lookup.get(citation.get('passage_id'),[])
             quote = citation.get('quote')
-            if not p or not quote or normal(quote) not in normal(p.get('text')):
+            identities={(p.get('document_id'),p.get('pdf_page'),p.get('sha256')) for p in candidates}
+            if len(identities)!=1 or not quote:
+                return None
+            p=next((p for p in candidates if normal(quote) in normal(p.get('text'))),None)
+            if not p:
                 return None
             document, page = p.get('document_id'), p.get('pdf_page')
             if type(document) is not int or type(page) is not int or min(document,page) < 1:
@@ -157,7 +166,8 @@ def build(payload):
         'company':payload.get('company'),'generated_at':payload.get('generated_at'),
         'news_checked_at':news.get('checked_at'),'valuation_date':val.get('valuation_date'),
         'market_price_date':val.get('market_price_date'),'market_price':val.get('market_price'),
-        'cards':cards,'business':business,'updates':updates,
+        'cards':cards,'business':business,'updates':updates,'peer_valuation':payload.get('peer_valuation'),
+        'source_reviews':payload.get('source_reviews',[]),
         'sector_comparison':{'rows':peer_rows,'status':comparison.get('status'),'limitations':comparison.get('limitations',[])},
         'verified_discoveries':0, 'omitted_unlinked_claims':omitted,
         'coverage':payload.get('coverage',{}),

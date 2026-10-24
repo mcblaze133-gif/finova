@@ -36,3 +36,11 @@ Malformed or citation-rejected empty operating sections receive at most one boun
 Reviewed ownership changes can be supplied as private source inputs in `data/scope-events.json`. A matching company, archived file hash and exact page quote are mandatory. An unreconciled present-tense claim about the affected entity is withheld, including when a model reviewer accepts it. These inputs require review and do not establish a live ownership register or automatic numerical adjustments.
 
 Local cash-price CSV intake rejects SLB filenames, settlement/lending-contract headers and non-EQ series. It requires explicit matching trade dates, finite positive closes and consistent duplicate observations. NSE Quote-Equity exports without a symbol column require an exact instrument-bearing filename; a conflicting row symbol is rejected. Valid-format rows are candidates, not authenticity attestations or automatic market-price overrides. All twelve supplied SLB exports were rejected without changing valuations. The five separately downloaded EQ files pass the common-date intake check.
+
+
+## 25 October update: reviewed historical cross-checks
+
+Matched 23 October EQ prices and reviewed FY2026 earnings now feed a separate
+conditional historical comparison. This supersedes the earlier implementation
+status above, without certifying forward peer estimates or assigning automatic
+reconciliation weight. See [selection, normalisation and remaining limits](PEER_VALUATION.md).

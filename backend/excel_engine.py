@@ -175,6 +175,13 @@ def company_package(company, update_run_id=None, *, include_comparison=True):
     if include_comparison and package['historical_statements'].get('periods'):
         from backend import sector_comparison
         package['sector_comparison'] = sector_comparison.build(package)
+        from backend import peer_valuation
+        package['peer_valuation'] = peer_valuation.build(company)
+        from backend import source_reviews
+        for review in source_reviews.build(company):
+            package.setdefault('research_notes',[]).append({'topic':review['title'],
+                'finding':review['finding']+' '+review['meaning']+' '+review['verification'],
+                'source':' | '.join('http://127.0.0.1:8000'+ref['url'] for ref in review['sources'])})
     return package
 
 

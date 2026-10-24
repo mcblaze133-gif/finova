@@ -91,6 +91,14 @@ class OnlineUpdateTests(unittest.TestCase):
         events,_=updates.validate_assessment(self.assessment(),grounded,'')
         self.assertEqual(events[0]['fact_status'],'original_report_underlying_claim_not_independently_verified')
 
+    def test_regulator_document_does_not_verify_investment_impact(self):
+        grounded=updates.parse_grounding(self.candidate())
+        grounded['sources'][0]['source_kind']='primary_regulatory_document'
+        events,rejected=updates.validate_assessment(self.assessment(),grounded,'Company sourcing includes palm oil in its raw materials.')
+        self.assertFalse(rejected)
+        self.assertEqual(events[0]['fact_status'],'regulator_document_retrieved_impact_and_appeal_status_not_verified')
+        self.assertIn('no automatic numerical change',events[0]['quantitative_treatment'])
+
     def test_commodity_queries_follow_company_disclosures(self):
         profile=Company(id='beverages',legal_name='Beverages Limited',business_model='fmcg',domains=['example.com'],seeds=['https://example.com/results'])
         queries=dict(news_feeds.queries(profile,'Coffee coffee coffee and tea tea, with packaging and freight.'))

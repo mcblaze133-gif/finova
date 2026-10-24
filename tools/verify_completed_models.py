@@ -41,7 +41,7 @@ def main():
                 target=target.lstrip('/') if target.startswith('/') else 'xl/'+target
                 sheets[sheet.get('name')]=cells(archive,strings,target)
                 table_count+=sum(f.get('t')=='dataTable' for f in ET.fromstring(archive.read(target)).findall('.//s:f',NS))
-            expected_sheets=19-sum(not data.get(k) for k in ('peers','transactions','assets','segments'))+int(len(data.get('sector_comparison',{}).get('rows',[]))>1)
+            expected_sheets=19-sum(not data.get(k) for k in ('peers','transactions','assets','segments'))+int(len(data.get('sector_comparison',{}).get('rows',[]))>1)+int(bool(data.get('peer_valuation')))
             assert len(sheets)==expected_sheets and table_count==3
             assert 'Statement history' in sheets
             if data.get('sector_comparison',{}).get('rows'):

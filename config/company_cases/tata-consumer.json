@@ -1,24 +1,24 @@
 {
-  "as_of": "2026-10-19",
+  "as_of": "2026-10-23",
   "market": {
     "debt": 28195100000.0,
     "cash": 30465700000.0,
     "nci": 14013300000.0,
     "preferred": 0.0,
     "nonoperating_assets": 28426000000.0,
-    "price": 978.9,
-    "price_date": "2026-10-16",
-    "valuation_date": "2026-10-19",
-    "current_shares": 989561780,
-    "diluted_shares": 989561780,
-    "shares_date": "2026-03-31",
+    "price": 963.9,
+    "price_date": "2026-10-23",
+    "valuation_date": "2026-10-23",
+    "current_shares": 989698022,
+    "diluted_shares": 989698022,
+    "shares_date": "2026-10-22",
     "balance_date": "2026-03-31",
     "accounting_scope": "consolidated",
     "currency": "INR",
     "other_senior_claims": 596800000,
     "interim_dividends": 9895617800,
     "lease_policy": "Borrowings and lease liabilities deducted once, with post-Ind AS116 operating EBITDA. Renewal-lease capex requires review.",
-    "quote_source": "NSE India home market display,16-Oct-2026 close, accessed19-Oct-2026. https://www.nseindia.com/ . Not a live19-Oct quote."
+    "quote_source": "NSE EQ closing-price CSV and NSE rendered quote capture, 23 October 2026. Reviewed references appear in Peer valuation."
   },
   "methods": [
     {
@@ -176,7 +176,8 @@
     "31-Mar-2026 balance and share basis rolled forward with estimated uniform interim FCFE, not a reported October balance.",
     "Assume INR10 per share distribution after balance date. Payment timing is an explicit analyst case assumption, not independently confirmed bank settlement.",
     "16-Oct close is the last dated reference used here. Latest intraday prices and later dilution are not asserted.",
-    "Other debt-like claims and nonoperating assets are carrying-value proxies. Minority buyout, pension and lease policies are described in Research."
+    "Other debt-like claims and nonoperating assets are carrying-value proxies. Minority buyout, pension and lease policies are described in Research.",
+    "Current basic shares reconciled to issuer capital / exchange allotment and market-cap snapshot. Diluted denominator retains the previous case dilution increment as an analyst proxy; current fully diluted capital is not certified. Reviewed source quotations in Peer valuation."
   ],
   "issues": [
     "Conditional analyst scenarios, not a precise fair-value recommendation. Capital costs, terminal returns, current cash bridge and multiples require analyst review.",

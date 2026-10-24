@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-10-18",
+  "as_of": "2026-10-23",
   "revenue_route": "Volume and price/mix",
   "margin_route": "EBITDA margin",
   "methods": [
@@ -117,8 +117,8 @@
     }
   ],
   "market": {
-    "price_date": "2026-10-16",
-    "price": 4764,
+    "price_date": "2026-10-23",
+    "price": 4537.9,
     "current_shares": 240868296,
     "diluted_shares": 240868296,
     "debt": 13802800000,
@@ -126,13 +126,13 @@
     "nci": 293200000,
     "preferred": 0,
     "nonoperating_assets": 37276600000,
-    "quote_source": "NSE indexed quote BRITANNIA INR4764; cross-check ET historical close 16-Oct-2026. Live quote delivery incomplete.",
+    "quote_source": "NSE EQ closing-price CSV and NSE rendered quote capture, 23 October 2026. Reviewed references appear in Peer valuation.",
     "shares_date": "2026-03-31",
     "balance_date": "2026-03-31",
     "accounting_scope": "consolidated",
     "currency": "INR",
     "lease_policy": "Gross debt includes INR22.45cr lease liabilities; reported EBITDA is post-Ind AS116. No separate double deduction of leases.",
-    "valuation_date": "2026-10-16",
+    "valuation_date": "2026-10-23",
     "interim_dividends": 21798580788
   },
   "market_notes": [

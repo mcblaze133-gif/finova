@@ -1,4 +1,25 @@
 {
-  "hul": [{"url":"https://newsonair.gov.in/fssai-issues-notices-to-nestle-india-and-hindustan-unilever-over-misleading-food-product-claims/","title":"Akashvani report on FSSAI notices, 18 October 2026"}],
-  "nestle-india": [{"url":"https://newsonair.gov.in/fssai-issues-notices-to-nestle-india-and-hindustan-unilever-over-misleading-food-product-claims/","title":"Akashvani report on FSSAI notices, 18 October 2026"}]
+  "hul": [
+    {
+      "url": "https://newsonair.gov.in/fssai-issues-notices-to-nestle-india-and-hindustan-unilever-over-misleading-food-product-claims/",
+      "title": "Akashvani report on FSSAI notices, 18 October 2026"
+    }
+  ],
+  "nestle-india": [
+    {
+      "url": "https://newsonair.gov.in/fssai-issues-notices-to-nestle-india-and-hindustan-unilever-over-misleading-food-product-claims/",
+      "title": "Akashvani report on FSSAI notices, 18 October 2026"
+    }
+  ],
+  "britannia": [
+    {
+      "url": "https://ccpa.doca.gov.in/checkuploaddocs.php?updocs=./uploads/27cb95e6aec3624a25e83076bbb5246fd5ccb2d123be679b3cd24acba9b3070a.pdf",
+      "title": "CCPA Britannia order, 22 October 2026 (selected visually reviewed passages)",
+      "publication_date": "2026-10-22",
+      "publisher": "Central Consumer Protection Authority",
+      "role": "Primary regulator order; visual transcription of selected passages; investment impact and subsequent appeal status not verified",
+      "reviewed_transcript": true,
+      "kind": "regulatory"
+    }
+  ]
 }

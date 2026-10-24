@@ -26,3 +26,7 @@ No sample API keys, live databases, internal logs or original company PDFs are
 published. Historical scripts may contain development-machine paths; these do
 not configure a new installation. Use `tools/setup_local.py` for machine-local
 runtime and library settings.
+
+Reviewed peer inputs and hash-bound visual transcriptions are also private
+review records. A clone does not include those records or automatically
+reproduce their analyst judgments. See [peer review requirements](PEER_VALUATION.md).

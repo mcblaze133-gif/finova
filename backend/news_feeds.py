@@ -123,18 +123,20 @@ async def primary_evidence(profile, directory):
     fetcher = documents.Fetcher(profile.domains)
     sources, blocks, coverage, candidates = [], [], [], {}
 
-    async def read(url, title, is_seed=False, original_news=False):
+    async def read(url, title, is_seed=False, original_news=False,regulatory=False):
         try:
             async with asyncio.timeout(35):
-                source_fetcher = documents.Fetcher(['newsonair.gov.in']) if original_news else fetcher
+                source_fetcher = documents.Fetcher(['ccpa.doca.gov.in']) if regulatory else documents.Fetcher(['newsonair.gov.in']) if original_news else fetcher
                 data, kind, final = await source_fetcher.fetch(url)
-                pages, links = await asyncio.to_thread(documents.extract_cached, data, kind)
+                from backend import public_sources
+                reviewed=public_sources.reviewed_pages(data,final) if regulatory else None
+                pages,links=(reviewed,[]) if reviewed else await asyncio.to_thread(documents.extract_cached,data,kind)
             digest = hashlib.sha256(data).hexdigest()
             (directory / ('official-'+digest+('.pdf' if data.startswith(b'%PDF') else '.html'))).write_bytes(data)
             sid = len(sources)
             sources.append({'source_id':sid,'url':final,'title':title[:400],
-                'verification':'original public-broadcaster news article retrieved; underlying regulatory notice not independently retrieved' if original_news else 'original company disclosure retrieved; company claim, not independent corroboration',
-                'source_kind':'original_news_article' if original_news else 'primary_company_disclosure','sha256':digest,'retrieved_at':storage.now()})
+                'verification':('original regulator document retrieved; selected passages manually transcribed from page images and bound to this exact file hash; impact and subsequent appeal status not verified' if reviewed else 'original regulator document retrieved and text extracted; interpretation, impact and appeal status require review') if regulatory else 'original public-broadcaster news article retrieved; underlying regulatory notice not independently retrieved' if original_news else 'original company disclosure retrieved; company claim, not independent corroboration',
+                'source_kind':'primary_regulatory_document' if regulatory else 'original_news_article' if original_news else 'primary_company_disclosure','sha256':digest,'retrieved_at':storage.now()})
             # Prefer the consolidated statements and management release in a
             # combined filing. Do not let lengthy HTML navigation consume context.
             ranked = sorted(enumerate(pages,1),key=lambda p:(
@@ -145,7 +147,7 @@ async def primary_evidence(profile, directory):
                 if len(text)<80 or budget<100:
                     continue
                 excerpt = text[:min(6000,budget)]
-                blocks.append({'text':f'Original company source, page {page}. Retrieved {storage.now()}.\n'+excerpt,
+                blocks.append({'text':f'Original {"regulator (reviewed visual transcription)" if regulatory and reviewed else "regulator" if regulatory else "public news" if original_news else "company"} source, page {page}. Retrieved {storage.now()}.\n'+excerpt,
                                'source_ids':[sid]})
                 budget -= len(excerpt)
             receipt=next((r for r in reversed(source_fetcher.receipts) if r['url']==final),None)
@@ -173,10 +175,11 @@ async def primary_evidence(profile, directory):
     watchlist=storage.PROJECT_DIR/'config/public_source_watchlist.json'
     if watchlist.exists():
         for item in json.loads(watchlist.read_text(encoding='utf-8')).get(profile.id,[])[:2]:
+            regulatory=item.get('kind')=='regulatory'
             try:
-                documents.allowed_url(item['url'],['newsonair.gov.in'])
+                documents.allowed_url(item['url'],['ccpa.doca.gov.in'] if regulatory else ['newsonair.gov.in'])
             except ValueError:
                 continue
-            await read(item['url'],item['title'],original_news=True)
+            await read(item['url'],item['title'],original_news=not regulatory,regulatory=regulatory)
     (directory/'official-source-coverage.json').write_text(json.dumps(coverage,indent=2),encoding='utf-8')
     return {'sources':sources,'blocks':blocks,'coverage':coverage}

@@ -40,7 +40,7 @@ def sector_coverage_view():
         active='<small>New investigation in progress. Links show the dated delivered report.</small>' if c.get('active_report_id') else ''
         rows.append('<tr><td><strong>'+escape(c['company'])+'</strong><small>'+escape(c['role'])+'</small>'+active+'</td><td>'+status+
                     '<small>'+str(c.get('operating_complete',0))+'/'+str(c.get('operating_total',0))+' operating areas completed</small><small>Report: '+escape(shown_date(c.get('prepared_at')))+'<br>News: '+escape(shown_date(c.get('news_checked_at')))+'</small></td><td>'+escape(gaps)+
-                    '</td><td>'+str(c.get('operating_benchmark_rows',0))+' operating benchmarks<small>Valuation peer selection incomplete</small></td><td>'+links+'</td></tr>')
+                    '</td><td>'+str(c.get('operating_benchmark_rows',0))+' operating benchmarks<small>'+('Reviewed conditional peer cross-check' if c.get('peer_valuation_available') else 'Valuation comparison unavailable')+'</small></td><td>'+links+'</td></tr>')
     u=data['universe']
     return HTMLResponse('<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Finova | Sector coverage</title><style>'
         'body{font:15px/1.6 Segoe UI,Arial,sans-serif;background:#f5f6f2;color:#163039;margin:0;padding:35px}main{max-width:1400px;margin:auto}a{color:#126b59;margin-right:12px}h1{font-size:34px}table{border-collapse:collapse;background:white;width:100%}th,td{text-align:left;vertical-align:top;padding:18px;border-bottom:1px solid #dce5e3}th{background:#122c35;color:white}small{display:block;color:#61757a;margin-top:8px}.scroll{overflow-x:auto}footer{margin-top:25px}</style></head><body><main>'
@@ -115,7 +115,7 @@ def snapshot(company,research_id,export_id,report_id,*,preview=False):
             market_implied={'P/E':s.get('N19'),'EV/EBITDA':s.get('N20'),'EPS at selected P/E':s.get('N21')},
             terminal_dependence=data['Dashboard'].get('E32') if name=='Base' else None)
     news=company_updates.get(company,raw['update_run_id']) if raw.get('update_run_id') else None
-    from backend import verification
+    from backend import verification,source_reviews
     workbook_hash=evidence_packs.digest_file(Path(export[0]['workbook_path']))
     audit=verification.build(company,inputs,news,export[0]['workbook_path'],workbook_hash)
     comparison = inputs.get('sector_comparison')
@@ -127,6 +127,16 @@ def snapshot(company,research_id,export_id,report_id,*,preview=False):
             peer['metrics'] = {key:cells.get(f'{column}{i}') for key,column in
                                [('revenue_growth','E'),('ebitda_margin','F'),('cash_conversion','G'),
                                 ('capex_ratio','H'),('net_debt_sales','I')]}
+    peers=inputs.get('peer_valuation')
+    if peers and 'Peer valuation' in data:
+        peers=json.loads(json.dumps(peers));cells=data['Peer valuation']
+        for i,peer in enumerate(peers['companies'],21):
+            peer['metrics']={key:cells.get(f'{column}{i}') for key,column in
+                [('reported_pe','AD'),('adjusted_pe','AE'),('ev_ebitda','AF'),('ev_ebit','AG'),
+                 ('ev_sales','AH'),('ps','AI'),('adjusted_ebitda_crore','AA'),('adjusted_pat_crore','AB')]}
+        peers['ranges']={key:{'low':cells.get(f'D{r}'),'midpoint':cells.get(f'E{r}'),
+            'high':cells.get(f'F{r}'),'usable_peers':cells.get(f'G{anchor}')} for key,r,anchor in
+            [('pe',6,11),('ev_ebitda',7,12)]}
     return {'report_id':report_id,'company_id':company,'company':resolve(company).legal_name,'generated_at':storage.now(),
         'started_at':run[0]['created_at'],'preview':preview,'research':raw,'history':history,'forecasts':forecasts,
         'valuation':results.saved_valuation(company,export_id=export_id),'methods':inputs['methods'],
@@ -134,7 +144,7 @@ def snapshot(company,research_id,export_id,report_id,*,preview=False):
         'verification_audit':audit,'workbook_sha256':workbook_hash,
         'workbook_url':f'http://127.0.0.1:8000/excel/exports/{export_id}',
         'native_excel_verified':False,'research_excel_linked':bool(linked),'inputs_created_at':inputs['created_at'],'validation_only':bool(raw.get('validation_only')),
-        'sector_comparison':comparison}
+        'sector_comparison':comparison,'peer_valuation':peers,'source_reviews':source_reviews.build(company)}
 
 async def make_pdf(folder,payload):
     source=folder/'research-report-inputs.json';source.write_text(json.dumps(payload,ensure_ascii=False),encoding='utf-8')

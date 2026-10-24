@@ -9,3 +9,11 @@ Source citation is not independent verification. The dashboard does not grant a 
 Selecting another company clears the previous results. Generating research still starts a fresh investigation through the existing pipeline. Explicit report links reopen their exact saved snapshot. Interrupted polling resumes the same investigation rather than submitting a duplicate. Findings cannot fall back to another company or a previous report.
 
 Validation: 220 automated tests pass, including eight dashboard evidence/identity tests. Browser checks cover all five populated companies, source links and verification labels, company switching, same-page report navigation, desktop layout and a 390px mobile layout. The existing polling recovery check also passes. This redesign does not change the Excel formulas, PDF generation or financial assumptions.
+
+
+25 October update: the reviewed peer comparison is report-bound and uses saved
+Excel values. The website preserves both frozen citation catalogs and rejects
+conflicting document identities. Selected documentary reviews explain exactly
+how source facts were checked, including explicitly labelled visual
+transcriptions for scanned originals. This is separate from independent
+verification of an investment discovery. The current offline suite has 272 tests.
