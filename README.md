@@ -133,6 +133,11 @@ financial correctness or successful reproduction of the full demonstration.
 Some PDF/layout checks require the reporting dependencies. The engineering
 checks do not certify a confirmed investment discovery.
 
+For the real five-company website workflow, exact report-ID recovery and
+PDF/Excel download checks, see [Cross-company checks](docs/CROSS_COMPANY_CHECKS.md).
+Live checks consume the existing provider allowance. A pipeline pass and a
+complete, independently corroborated research conclusion are different results.
+
 ## Repository map
 
 | Folder | Purpose |

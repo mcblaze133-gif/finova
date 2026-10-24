@@ -13,6 +13,9 @@ class Company(BaseModel):
 
 
 PROFILES = [
+    Company(id='britannia', legal_name='Britannia Industries Limited', business_model='fmcg',
+            domains=['britannia.co.in'],
+            seeds=['https://www.britannia.co.in/investors/financial-performance/financial-results?tab=financial-performance']),
     Company(id='hul', legal_name='Hindustan Unilever Limited', business_model='fmcg',
             domains=['hul.co.in'], seeds=['https://www.hul.co.in/investors/results-and-presentations/quarterly-results-and-webcasts/', 'https://www.hul.co.in/investors/annual-reports-and-performance-highlights/annual-reports/'], peers=['nestle-india']),
     Company(id='trent', legal_name='Trent Limited', business_model='retail',

@@ -249,12 +249,22 @@ async def generate(run_id, role, context, schema):
                                         'responseJsonSchema': grammar}}
         storage.event(run_id, role, {'status': 'request started', 'attempt': attempt + 1})
         try:
-            async with httpx.AsyncClient(timeout=httpx.Timeout(100,connect=10), trust_env=False) as client:
+            # Section callers have a 120-second outer budget. Leave room for
+            # the single transport retry instead of consuming it in attempt 1.
+            read_budget=50 if role in ('sector','sector-review') else 100
+            async with httpx.AsyncClient(timeout=httpx.Timeout(read_budget,connect=10), trust_env=False) as client:
                 response = await client.post(f'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent',
                                              headers={'x-goog-api-key': key}, json=payload)
         except httpx.RequestError as exc:
-            storage.event(run_id,'model_connection_failed',{'role':role,'error_type':type(exc).__name__})
-            raise ModelUnavailable('Gemini connection failed. Run stopped without fallback.') from None
+            retry = attempt == 0
+            storage.event(run_id,'model_connection_failed',{'role':role,'error_type':type(exc).__name__,
+                          'attempt':attempt+1,'retry_same_provider':retry})
+            if retry:
+                # At most two attempts in this existing loop; both reserve
+                # allowance. Do not switch models or retry 401/403/429 responses.
+                await asyncio.sleep(2)
+                continue
+            raise ModelUnavailable('Gemini connection failed after two bounded attempts. No paid fallback.') from None
         if response.status_code in (500, 502, 503, 504) and attempt == 0:
             await asyncio.sleep(2)
             continue

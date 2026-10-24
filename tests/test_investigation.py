@@ -20,7 +20,7 @@ class InvestigationTests(AuditFixture,unittest.IsolatedAsyncioTestCase):
     async def test_throttled_index_is_not_retried_or_treated_as_empty_coverage(self):
         with patch.object(investigation.documents.Fetcher,'fetch',new=AsyncMock(side_effect=ValueError('Source returned HTTP 429.'))) as fetch,patch.object(investigation,'SEARCH_NEXT',0),patch.object(investigation,'SEARCH_BLOCKED_UNTIL',0),patch.object(investigation,'SEARCH_LOCK',__import__('asyncio').Lock()):
             with self.assertRaises(ValueError):await investigation.public_search('cash conversion','Demo Consumer Limited')
-            with self.assertRaisesRegex(ValueError,'rate limit'):await investigation.public_search('revenue quality','Demo Consumer Limited')
+            with self.assertRaisesRegex(ValueError,'backed off'):await investigation.public_search('revenue quality','Demo Consumer Limited')
             self.assertEqual(fetch.await_count,1)
 
     def candidate(self):

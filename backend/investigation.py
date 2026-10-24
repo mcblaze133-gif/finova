@@ -7,6 +7,7 @@ import asyncio
 import json
 import re
 import time
+import httpx
 from urllib.parse import urlencode, urlsplit
 from backend import documents, storage
 from backend.companies import resolve
@@ -119,12 +120,19 @@ async def public_search(query, company=None):
     global SEARCH_NEXT,SEARCH_BLOCKED_UNTIL
     async with SEARCH_LOCK:
         if time.monotonic()<SEARCH_BLOCKED_UNTIL:
-            raise ValueError('Public search rate limit active; coverage incomplete.')
+            raise ValueError('Public discovery temporarily backed off; coverage incomplete.')
         if time.monotonic()<SEARCH_NEXT:
             await asyncio.sleep(SEARCH_NEXT-time.monotonic())
         SEARCH_NEXT=time.monotonic()+5
         try:
             data,_,_=await fetcher.fetch(url)
+        except (httpx.RequestError, TimeoutError):
+            # One unreachable discovery service must not consume every
+            # hypothesis's time budget. This never supplies cached evidence:
+            # callers retain an explicit independent-coverage gap. Other
+            # company-news feeds and official-source checks are separate.
+            SEARCH_BLOCKED_UNTIL=time.monotonic()+60
+            raise ValueError('Public discovery connection unavailable; coverage incomplete.') from None
         except ValueError as exc:
             if '429' in str(exc):SEARCH_BLOCKED_UNTIL=time.monotonic()+60
             raise

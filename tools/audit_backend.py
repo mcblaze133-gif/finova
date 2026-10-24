@@ -29,7 +29,7 @@ def main():
         calls = model._daily_calls(db,storage.now()[:10])
         probes = db.execute('SELECT COUNT(*) FROM model_probes WHERE substr(created_at,1,10)=?',(storage.now()[:10],)).fetchone()[0]
         limit=model._daily_limit(db,storage.now()[:10])
-        check('Daily AI cap and explicit extension respected',calls+probes<=limit,calls=calls,probes=probes,normal_cap=25,effective_cap=limit)
+        check('Daily AI cap and explicit extension respected',calls+probes<=limit,calls=calls,probes=probes,normal_cap=model.DAILY_REQUEST_LIMIT,effective_cap=limit)
 
     failures=[]
     docs=storage.rows('SELECT id,local_path,sha256 FROM documents')
