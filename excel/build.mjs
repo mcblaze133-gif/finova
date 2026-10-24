@@ -429,8 +429,11 @@ if(input.research_notes?.length){
 }
 
 title('Sources','Source and fact audit','Reported facts, external evidence, guidance and analyst estimates retain their own categories.');
-block('Sources','C5',[['Metric','Period ended','Original source','File','Page / row','Statement / evidence date','Source type','Review']]);
-input.sources.forEach((r,i)=>block('Sources',`C${6+i}`,[[r.metric,new Date(r.period_end+'T00:00:00Z'),r.source_url,r.source_file,r.source_page,new Date(r.source_date+'T00:00:00Z'),r.source_type,r.review_status]]));
+block('Sources','C5',[['Metric','Period ended','Original source','File','Page / row','Statement / evidence date','Source type','Review','Recorded file SHA-256','Review explanation','Recorded quotation (excerpt)','Accounting / operations basis']]);
+const auditRows=input.verification_audit?.items;
+const sourceRows=auditRows?.length?auditRows.map(r=>({metric:r.metric,period_end:r.period_end,source_url:r.source.url,source_file:r.source.file,source_page:r.source.page,source_date:r.source.date,source_type:'historical',review_status:r.checks.review_type,source_sha256:r.source.sha256,review_note:r.checks.review_explanation,source_quote:r.source.quote,accounting_scope:r.accounting_scope,operations_scope:r.operations_scope})):input.sources;
+sourceRows.forEach((r,i)=>{const row=6+i;block('Sources',`C${row}`,[[r.metric,new Date(r.period_end+'T00:00:00Z'),r.source_url,r.source_file,r.source_page,new Date(r.source_date+'T00:00:00Z'),r.source_type,r.review_status,r.source_sha256||'Not recorded',r.review_note||'No explanation recorded',r.source_quote?(r.source_quote.length>350?r.source_quote.slice(0,350)+' ... (open full verification register)':r.source_quote):'No quotation recorded',r.accounting_scope+' / '+r.operations_scope]]);sheets.Sources.getRange(`K${row}:N${row}`).format.wrapText=true;sheets.Sources.getRange(`C${row}:N${row}`).format.rowHeight=120;const register=input.research_report?.report_id?`http://127.0.0.1:8000/analysis-reports/${input.research_report.report_id}/verification/view`:`http://127.0.0.1:8000/verification/${input.company_id}`;nativeLinks.push({sheet:'Sources',cell:`M${row}`,url:register,label:sheets.Sources.getRange(`M${row}`).values[0][0]});});
+sheets.Sources.getRange('K:K').format.columnWidth=35;sheets.Sources.getRange('L:M').format.columnWidth=65;sheets.Sources.getRange('N:N').format.columnWidth=30;
 sheets.Sources.getRange('D6:D240').setNumberFormat('dd-mmm-yyyy');sheets.Sources.getRange('H6:H240').setNumberFormat('dd-mmm-yyyy');
 title('Guide','Model conventions and next inputs');
 const guide=[

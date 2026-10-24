@@ -9,7 +9,7 @@ from uuid import uuid4
 from zipfile import ZipFile
 import xml.etree.ElementTree as ET
 from fastapi import APIRouter,HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse,HTMLResponse
 from pydantic import BaseModel,Field,ConfigDict
 from backend import storage,research,excel_engine,evidence_packs,company_updates,results,model
 from backend.companies import resolve
@@ -85,11 +85,14 @@ def snapshot(company,research_id,export_id,report_id,*,preview=False):
             market_implied={'P/E':s.get('N19'),'EV/EBITDA':s.get('N20'),'EPS at selected P/E':s.get('N21')},
             terminal_dependence=data['Dashboard'].get('E32') if name=='Base' else None)
     news=company_updates.get(company,raw['update_run_id']) if raw.get('update_run_id') else None
+    from backend import verification
+    workbook_hash=evidence_packs.digest_file(Path(export[0]['workbook_path']))
+    audit=verification.build(company,inputs,news,export[0]['workbook_path'],workbook_hash)
     return {'report_id':report_id,'company_id':company,'company':resolve(company).legal_name,'generated_at':storage.now(),
         'started_at':run[0]['created_at'],'preview':preview,'research':raw,'history':history,'forecasts':forecasts,
         'valuation':results.saved_valuation(company,export_id=export_id),'methods':inputs['methods'],
         'assumptions':inputs['assumptions'],'market_notes':inputs.get('market_notes',[]),'news':news,
-        'workbook_sha256':evidence_packs.digest_file(Path(export[0]['workbook_path'])),
+        'verification_audit':audit,'workbook_sha256':workbook_hash,
         'workbook_url':f'http://127.0.0.1:8000/excel/exports/{export_id}',
         'native_excel_verified':False,'research_excel_linked':bool(linked),'inputs_created_at':inputs['created_at'],'validation_only':bool(raw.get('validation_only'))}
 
@@ -194,9 +197,27 @@ def status(report_id:str):
         'news_checked_at':(payload.get('news') or {}).get('checked_at')}
     return {k:job[k] for k in ('id','company','status','created_at','updated_at','error')}|{
         'validation_only':bool(payload.get('validation_only')),'overview':overview,'research_excel_linked':bool(payload.get('research_excel_linked')),
+        'verification':{'checked_at':payload['verification_audit']['checked_at'],'systems':payload['verification_audit']['systems']} if payload.get('verification_audit') else None,
+        'verification_url':f'/analysis-reports/{report_id}/verification/view' if payload.get('verification_audit') else None,
         'view_url':f'/analysis-reports/{report_id}/view' if job['pdf_path'] else None,
         'pdf_url':f'/analysis-reports/{report_id}/pdf' if job['pdf_path'] else None,
         'excel_url':f'/excel/exports/{job["export_id"]}' if job['pdf_path'] and job['export_id'] else None}
+
+@router.get('/analysis-reports/{report_id}/verification')
+def report_verification(report_id:str):
+    audit=json.loads(row(report_id)['snapshot_json'] or '{}').get('verification_audit')
+    if not audit:raise HTTPException(404,'No verification register is attached to this saved report.')
+    return audit
+
+
+@router.get('/analysis-reports/{report_id}/verification/view')
+def report_verification_view(report_id:str):
+    from backend import verification
+    payload=json.loads(row(report_id)['snapshot_json'] or '{}')
+    audit=payload.get('verification_audit')
+    if not audit:raise HTTPException(404,'No verification register is attached to this report.')
+    return HTMLResponse(verification.render(audit,payload['company']))
+
 
 @router.get('/analysis-reports/{report_id}/pdf')
 def pdf(report_id:str,view:bool=False):

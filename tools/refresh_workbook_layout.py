@@ -19,7 +19,8 @@ async def main(company, export_id=None):
     before=reports.workbook_values(previous['workbook_path'])
     if export_id:
         candidates=storage.rows("SELECT * FROM excel_exports WHERE id=? AND company=? AND status='exported'",(export_id,company))
-        if not candidates or json.loads(candidates[0]['input_json'])!=package:
+        frozen=lambda value:{k:v for k,v in value.items() if k!='verification_audit'}
+        if not candidates or frozen(json.loads(candidates[0]['input_json']))!=frozen(package):
             raise ValueError('Existing export must match the exact frozen report inputs.')
         built={'status':'exported','export_id':export_id}
     else:
@@ -56,6 +57,8 @@ async def main(company, export_id=None):
     # change. A presentation repair is not represented as a fresh investigation.
     payload=json.loads(job['snapshot_json'])
     payload['workbook_sha256']=evidence_packs.digest_file(Path(export['workbook_path']))
+    from backend import verification
+    payload['verification_audit']=verification.build(company,json.loads(export['input_json']),payload.get('news'),export['workbook_path'],payload['workbook_sha256'])
     payload['workbook_url']=f"http://127.0.0.1:8000/excel/exports/{export['id']}"
     if payload.get('valuation'):
         payload['valuation']['download_url']=f"/excel/exports/{export['id']}"

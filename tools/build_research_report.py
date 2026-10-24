@@ -512,6 +512,13 @@ def build(data,target):
     if len(rows)>1:story.append(table(rows,[115,80,80,80,CONTENT-355],padding=6))
 
     section('Appendix C  Method selection and coverage gaps')
+    audit=data.get('verification_audit')
+    if audit:
+        sub('Verification status and checks performed')
+        rows=[['Area','Status','What was checked / remaining limit']]
+        rows.extend([x['system'],x['status'],x['how']] for x in audit['systems'])
+        story.append(table(rows,[85,110,CONTENT-195],padding=6))
+        note('Verification recorded '+ist(audit['checked_at'])+'. File integrity, source attribution, human review and independent corroboration are different checks. Detailed per-input records are retained in the workbook and verification register.')
     rows=[['Method','Selected?','Reason / role']]
     for m in data['methods']:rows.append([m['method'],m['applicable'],m.get('reason','')])
     story.append(table(rows,[105,60,CONTENT-165]))

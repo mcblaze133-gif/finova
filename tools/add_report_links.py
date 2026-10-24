@@ -17,7 +17,7 @@ def apply(path,manifest):
  wb=E.fromstring(data['xl/workbook.xml']);rels={n.get('Id'):n.get('Target') for n in E.fromstring(data['xl/_rels/workbook.xml.rels'])}
  sheets={n.get('name'):(rels[n.get('{'+R+'}id')].lstrip('/') if rels[n.get('{'+R+'}id')].startswith('/') else 'xl/'+rels[n.get('{'+R+'}id')]) for n in wb.findall('{'+S+'}sheets/{'+S+'}sheet')}
  for name in {l['sheet'] for l in links}:
-  if name not in ('Dashboard','Research'):raise ValueError('Unexpected hyperlink sheet.')
+  if name not in ('Dashboard','Research','Sources'):raise ValueError('Unexpected hyperlink sheet.')
   sheetpath=sheets[name];root=E.fromstring(data[sheetpath]);before=E.tostring(root.find('{'+S+'}sheetData'))
   relpath=str(Path(sheetpath).parent/'_rels'/(Path(sheetpath).name+'.rels')).replace('\\','/')
   relationships=E.fromstring(data[relpath]) if relpath in data else E.Element('{'+P+'}Relationships')
@@ -32,7 +32,7 @@ def apply(path,manifest):
     if old.get('ref')==cell:hyperlinks.remove(old)
    if url=='#Research!C2':E.SubElement(hyperlinks,'{'+S+'}hyperlink',{'ref':cell,'location':'Research!C2'})
    else:
-    if not re.fullmatch(r'http://127\.0\.0\.1:8000/(analysis-reports/[a-f0-9]{32}/pdf\?view=true|documents/[0-9]+/original#page=[0-9]+)',url):raise ValueError('Unexpected hyperlink destination.')
+    if not re.fullmatch(r'http://127\.0\.0\.1:8000/(analysis-reports/[a-f0-9]{32}/(?:pdf\?view=true|verification(?:/view)?)|verification/[a-z0-9-]{2,60}|documents/[0-9]+/original#page=[0-9]+)',url):raise ValueError('Unexpected hyperlink destination.')
     ident='rIdFinovaLink'+str(i+1)
     for old in list(relationships):
      if old.get('Id')==ident:relationships.remove(old)

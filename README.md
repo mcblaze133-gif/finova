@@ -12,6 +12,8 @@ competing explanations. Valuation is a cross-check, not proof of a discovery.
 
 [Next-phase progress: incremental source refresh](docs/NEXT_PHASE.md)
 
+[Statement intake and verification status](docs/STATEMENT_INTAKE.md)
+
 ## Demonstration
 
 The working demonstration runs locally on Windows at `http://127.0.0.1:8000`.

@@ -273,6 +273,7 @@ function showResearchReport(state){
  box.append(el('p',state.research_excel_linked?'PDF and Excel contain findings from this investigation. Excel includes the cited research, current-update review and editable valuation assumptions.':'The PDF explains historical trends, valuation assumptions, risks and supporting evidence.','muted'));
 
  box.append(el('p','Edits to a downloaded workbook stay in that copy. They do not automatically change the saved model inputs or the PDF, which records the model when the report was generated.','muted'));
+ if(state.verification){const details=el('details');details.append(el('summary','Verification and evidence limits'));details.append(el('p','Checks recorded '+timeLabel(state.verification.checked_at)+'. Each status describes the checks performed, rather than a guarantee of accuracy.','muted'));for(const check of state.verification.systems){const item=el('div');item.append(el('h3',check.system+': '+check.status),el('p',check.how));details.append(item)}if(state.verification_url){const link=el('a','Open source-by-source verification register');link.href=state.verification_url;link.target='_blank';link.rel='noopener noreferrer';details.append(link)}box.append(details)}
 
 }
 

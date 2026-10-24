@@ -40,6 +40,10 @@ revalidated by HTTP 304; these are access records, not publication dates.
 
 ## Remaining work
 
+The first candidate-intake implementation and visible verification register are
+now documented in [Statement intake](STATEMENT_INTAKE.md). Promotion still needs
+review, and full automatic normalization remains incomplete.
+
 1. Automatically discover and reconcile new financial-statement inputs with
    explicit period, unit, scope, restatement and source review checks.
 2. Make the Excel authoring runtime independently installable or replace its

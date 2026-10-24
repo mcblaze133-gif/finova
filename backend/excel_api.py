@@ -2,6 +2,7 @@ import asyncio
 import re
 from uuid import uuid4
 from datetime import date
+from typing import Literal
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse, Response
 from pydantic import BaseModel, ConfigDict, Field
@@ -13,6 +14,47 @@ router = APIRouter()
 JOBS = set()
 EXPORT_JOBS = set()
 EXPORT_ADMISSION = asyncio.Lock()
+
+
+class StatementScan(BaseModel):
+    model_config=ConfigDict(extra='forbid')
+    company:str=Field(pattern=r'^[a-z0-9-]{2,60}$')
+
+
+class StatementReview(BaseModel):
+    model_config=ConfigDict(extra='forbid')
+    action:Literal['approve','reject']
+    note:str=Field(min_length=20,max_length=1500)
+    operations_scope:Literal['continuing','total']|None=None
+    source_date:date|None=None
+    currency:Literal['INR']|None=None
+    confirm_period:bool=False
+
+
+@router.post('/statement-intake/scan')
+async def scan_statements(request:StatementScan):
+    from backend import statement_intake
+    from backend.companies import resolve
+    try:return await asyncio.to_thread(statement_intake.scan,resolve(request.company).id)
+    except ValueError as exc:raise HTTPException(422,str(exc)) from None
+
+
+@router.get('/statement-intake/{company}')
+def statement_candidates(company:str):
+    from backend import statement_intake
+    from backend.companies import resolve
+    try:
+        company=resolve(company).id
+        return {'company':company,'items':statement_intake.candidates(company),
+                'verification':'Extracted candidates require recorded review; source hash, quotation, period, units and conflicts are checked before approval.'}
+    except ValueError as exc:raise HTTPException(422,str(exc)) from None
+
+
+@router.post('/statement-intake/candidates/{candidate_id}/review')
+def review_statement(candidate_id:str,request:StatementReview):
+    from backend import statement_intake
+    try:return statement_intake.review(candidate_id,**request.model_dump())
+    except ValueError as exc:raise HTTPException(409,str(exc)) from None
 
 
 @router.get('/company-library')
@@ -44,6 +86,16 @@ def historical_statements(company: str):
 
 class Strict(BaseModel):
     model_config = ConfigDict(extra='forbid')
+
+
+@router.get('/verification/{company}')
+def verification_status(company:str):
+    from backend import verification,company_updates
+    from backend.companies import resolve
+    try:
+        company=resolve(company).id
+        return verification.build(company,news=company_updates.latest(company))
+    except ValueError as exc:raise HTTPException(422,str(exc)) from None
 
 class CSVImport(Strict):
     relative_path: str = Field(min_length=1, max_length=500)

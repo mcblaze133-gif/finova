@@ -148,7 +148,10 @@ def text_signature(company, fingerprints):
 
 def refresh(company):
     with LOCK:
-        return _refresh(company)
+        result=_refresh(company)
+        from backend import statement_intake
+        result['statement_intake']=statement_intake.scan(company,result['source_fingerprints'])
+        return result
 
 
 def _refresh(company):

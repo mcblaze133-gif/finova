@@ -18,6 +18,11 @@ from backend.evidence_packs import digest_file
 def input_fingerprint(package):
     import hashlib
     semantic = {k: v for k, v in package.items() if k != 'created_at'}
+    if not semantic.get('verification_audit') and package.get('company_id'):
+        from backend import verification
+        semantic['verification_audit']=verification.build(package['company_id'],package,package.get('external_updates'))
+    if semantic.get('verification_audit'):
+        semantic['verification_audit']={k:v for k,v in semantic['verification_audit'].items() if k!='checked_at'}
     code = {p.name: digest_file(p) for p in (storage.PROJECT_DIR / 'excel').glob('*.mjs')}
     # Include authoring dependency versions and backend input semantics.
     for p in (storage.PROJECT_DIR / 'package-lock.json', Path(__file__),
@@ -257,6 +262,8 @@ async def export_package(company,package,export_id=None,*,force_rebuild=False,fo
     """Build an exact input package, preserving previously reviewed assumptions."""
     if package.get('company_id')!=company:raise ValueError('Workbook input company mismatch.')
     package=json.loads(json.dumps(package))
+    from backend import verification
+    package['verification_audit']=verification.build(company,package,package.get('external_updates'))
     export_id = export_id or uuid4().hex
     fingerprint = input_fingerprint(package)
     cached = None if force_rebuild else cached_export(fingerprint)
