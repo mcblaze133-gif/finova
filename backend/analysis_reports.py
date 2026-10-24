@@ -210,6 +210,18 @@ def report_verification(report_id:str):
     return audit
 
 
+@router.get('/analysis-reports/{report_id}/findings')
+def report_findings(report_id:str):
+    from backend import discovery_view
+    job=row(report_id)
+    if job['status'] not in ('completed','partial') or not job['snapshot_json']:
+        raise HTTPException(409,'Findings are not ready for this report.')
+    payload=json.loads(job['snapshot_json'])
+    if payload.get('company_id')!=job['company'] or payload.get('report_id')!=report_id:
+        raise HTTPException(409,'Report identity does not match its findings.')
+    return discovery_view.build(payload)
+
+
 @router.get('/analysis-reports/{report_id}/verification/view')
 def report_verification_view(report_id:str):
     from backend import verification
