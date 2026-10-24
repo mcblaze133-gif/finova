@@ -17,6 +17,36 @@ from backend.companies import resolve
 router=APIRouter()
 TASKS=set()
 ADMISSION=asyncio.Lock()
+
+@router.get('/sector/coverage')
+def sector_coverage():
+    from backend import sector_status
+    return sector_status.build()
+
+@router.get('/sector/coverage/view',response_class=HTMLResponse)
+def sector_coverage_view():
+    from backend import sector_status
+    from html import escape
+    from datetime import datetime, timedelta, timezone
+    def shown_date(value):
+        try:return datetime.fromisoformat(value.replace('Z','+00:00')).astimezone(timezone(timedelta(hours=5,minutes=30))).strftime('%d %b %Y, %H:%M IST')
+        except (ValueError,AttributeError):return 'Not established'
+    data=sector_status.build();rows=[]
+    for c in data['companies']:
+        links=' '.join(f'<a href="{escape(c[k],quote=True)}">{label}</a>' for k,label in
+                       [('report_url','Findings'),('pdf_url','PDF'),('excel_url','Excel'),('verification_url','Sources & checks')] if c.get(k))
+        status='Delivery checks passed' if c['checks_passed'] else 'Delivery checks incomplete'
+        gaps=', '.join(c.get('unresolved_areas',[])) or 'No delivered assessment'
+        active='<small>New investigation in progress. Links show the dated delivered report.</small>' if c.get('active_report_id') else ''
+        rows.append('<tr><td><strong>'+escape(c['company'])+'</strong><small>'+escape(c['role'])+'</small>'+active+'</td><td>'+status+
+                    '<small>'+str(c.get('operating_complete',0))+'/'+str(c.get('operating_total',0))+' operating areas completed</small><small>Report: '+escape(shown_date(c.get('prepared_at')))+'<br>News: '+escape(shown_date(c.get('news_checked_at')))+'</small></td><td>'+escape(gaps)+
+                    '</td><td>'+str(c.get('operating_benchmark_rows',0))+' operating benchmarks<small>Valuation peer selection incomplete</small></td><td>'+links+'</td></tr>')
+    u=data['universe']
+    return HTMLResponse('<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Finova | Sector coverage</title><style>'
+        'body{font:15px/1.6 Segoe UI,Arial,sans-serif;background:#f5f6f2;color:#163039;margin:0;padding:35px}main{max-width:1400px;margin:auto}a{color:#126b59;margin-right:12px}h1{font-size:34px}table{border-collapse:collapse;background:white;width:100%}th,td{text-align:left;vertical-align:top;padding:18px;border-bottom:1px solid #dce5e3}th{background:#122c35;color:white}small{display:block;color:#61757a;margin-top:8px}.scroll{overflow-x:auto}footer{margin-top:25px}</style></head><body><main>'
+        '<a href="/">Finova research</a><h1>Company coverage</h1><p>Five populated companies, one shared research and valuation workflow. Results remain qualified where evidence is incomplete.</p>'
+        '<div class="scroll"><table><thead><tr><th>Company</th><th>Delivery checks</th><th>Research gaps</th><th>Peer comparison</th><th>Reports & evidence</th></tr></thead><tbody>'+''.join(rows)+'</tbody></table></div><footer><p>'+escape(data['meaning'])+'</p><p>Universe reference: '+escape(u['reference_date'])+'. <a href="'+escape(u['source'],quote=True)+'">NSE constituent reference</a>. '+escape(u['limitation'])+'</p><p>Britannia is supplementary coverage. <a href="https://www.niftyindices.com/Press_Release/ind_prs21022025.pdf">NSE removal notice</a>.</p><small>Register checked '+escape(shown_date(data['checked_at']))+'</small></footer></main></body></html>')
+
 class Request(BaseModel):
     model_config=ConfigDict(extra='forbid')
     company:str=Field(min_length=2,max_length=160)
@@ -88,13 +118,23 @@ def snapshot(company,research_id,export_id,report_id,*,preview=False):
     from backend import verification
     workbook_hash=evidence_packs.digest_file(Path(export[0]['workbook_path']))
     audit=verification.build(company,inputs,news,export[0]['workbook_path'],workbook_hash)
+    comparison = inputs.get('sector_comparison')
+    if comparison and 'Sector comparison' in data:
+        # Public outputs read saved Excel results, never a parallel Python model.
+        comparison = json.loads(json.dumps(comparison))
+        cells = data['Sector comparison']
+        for i, peer in enumerate(comparison['rows'], 6):
+            peer['metrics'] = {key:cells.get(f'{column}{i}') for key,column in
+                               [('revenue_growth','E'),('ebitda_margin','F'),('cash_conversion','G'),
+                                ('capex_ratio','H'),('net_debt_sales','I')]}
     return {'report_id':report_id,'company_id':company,'company':resolve(company).legal_name,'generated_at':storage.now(),
         'started_at':run[0]['created_at'],'preview':preview,'research':raw,'history':history,'forecasts':forecasts,
         'valuation':results.saved_valuation(company,export_id=export_id),'methods':inputs['methods'],
         'assumptions':inputs['assumptions'],'market_notes':inputs.get('market_notes',[]),'news':news,
         'verification_audit':audit,'workbook_sha256':workbook_hash,
         'workbook_url':f'http://127.0.0.1:8000/excel/exports/{export_id}',
-        'native_excel_verified':False,'research_excel_linked':bool(linked),'inputs_created_at':inputs['created_at'],'validation_only':bool(raw.get('validation_only'))}
+        'native_excel_verified':False,'research_excel_linked':bool(linked),'inputs_created_at':inputs['created_at'],'validation_only':bool(raw.get('validation_only')),
+        'sector_comparison':comparison}
 
 async def make_pdf(folder,payload):
     source=folder/'research-report-inputs.json';source.write_text(json.dumps(payload,ensure_ascii=False),encoding='utf-8')
@@ -131,10 +171,18 @@ async def execute(report_id):
         update_id=raw.get('update_run_id')
         update=company_updates.get(company,update_id) if update_id else None
         if not update:raise ValueError('The new online check was not recorded. No earlier news was substituted.')
+        targeted = None
         if not raw.get('validation_only'):
             from backend import sector_research
+            from backend import research_gaps
+            stage(report_id,'targeted_evidence')
+            initial = excel_engine.company_package(company, include_comparison=False)
+            review_payload = {'company_id':company,'company':resolve(company).legal_name,
+                              'research':raw,'history':initial['historical_statements']}
+            targeted = await research_gaps.investigate(review_payload, live=True)
+            review_payload['targeted_research'] = targeted
             stage(report_id,'section_analysis')
-            await sector_research.complete({'company_id':company,'company':resolve(company).legal_name,'research':raw},research_id)
+            await sector_research.complete(review_payload,research_id)
         stage(report_id,'valuation')
         export_id=uuid4().hex;stage(report_id,'valuation',export_id=export_id)
         built=await excel_engine.export_company(company,export_id,refresh_research=False,force_rebuild=True,research_update_id=update_id,analysis_report_id=report_id)
@@ -148,7 +196,13 @@ async def execute(report_id):
         from backend import research_gaps
         stage(report_id,'targeted_evidence')
         if payload.get('company_id'):
-            payload['targeted_research']=await research_gaps.investigate(payload,live=True)
+            if targeted is not None:
+                # Original sources must reach the section reviewer before the
+                # workbook binds its research hash. Do not repeat web searches.
+                targeted['signals'] = research_gaps.signals(payload.get('history', {}))
+                payload['targeted_research'] = targeted
+            else:
+                payload['targeted_research']=await research_gaps.investigate(payload,live=True)
             payload['coverage']=research_gaps.report_coverage(payload)
         if evidence_packs.source_fingerprints(company)!=manifest['source_fingerprints']:
             raise ValueError('Company documents changed during targeted review. Run the report again.')
@@ -197,6 +251,7 @@ def status(report_id:str):
         'news_checked_at':(payload.get('news') or {}).get('checked_at')}
     return {k:job[k] for k in ('id','company','status','created_at','updated_at','error')}|{
         'validation_only':bool(payload.get('validation_only')),'overview':overview,'research_excel_linked':bool(payload.get('research_excel_linked')),
+        'revision_note':payload.get('revision_note'),
         'verification':{'checked_at':payload['verification_audit']['checked_at'],'systems':payload['verification_audit']['systems']} if payload.get('verification_audit') else None,
         'verification_url':f'/analysis-reports/{report_id}/verification/view' if payload.get('verification_audit') else None,
         'view_url':f'/analysis-reports/{report_id}/view' if job['pdf_path'] else None,

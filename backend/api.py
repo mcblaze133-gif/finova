@@ -1,4 +1,5 @@
 import asyncio
+import hashlib
 import json
 import re
 from datetime import date
@@ -105,14 +106,23 @@ def list_documents(company: str):
 
 @router.get('/documents/{document_id}/original')
 def original(document_id: int):
-    found = storage.rows('SELECT local_path FROM documents WHERE id=?', (document_id,))
+    found = storage.rows('SELECT local_path,sha256 FROM documents WHERE id=?', (document_id,))
     if not found:
         raise HTTPException(404, 'Document not found.')
     path = (storage.PROJECT_DIR / found[0]['local_path']).resolve()
     if not path.is_relative_to((storage.DATA_DIR / 'raw').resolve()) or not path.is_file():
         raise HTTPException(404, 'Original unavailable.')
-    # HTML originals download as attachments; untrusted HTML is never served inline.
-    return FileResponse(path, filename=path.name, media_type='application/octet-stream')
+    with path.open('rb') as source:
+        is_pdf=source.read(5)==b'%PDF-'
+        source.seek(0)
+        digest=hashlib.file_digest(source,'sha256').hexdigest()
+    if digest!=found[0]['sha256']:
+        raise HTTPException(409,'Archived source integrity check failed. The cited original was not served.')
+    # PDF citations open at #page; untrusted HTML remains an attachment.
+    return FileResponse(path, filename=path.name,
+                        media_type='application/pdf' if is_pdf else 'application/octet-stream',
+                        content_disposition_type='inline' if is_pdf else 'attachment',
+                        headers={'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'})
 
 
 @router.get('/passages/{passage_id}')

@@ -15,7 +15,9 @@ class Sections(AuditFixture,unittest.IsolatedAsyncioTestCase):
  def reviews(self):return s.Decisions(decisions=[dict(topic=t,verdict='supported',reason='The bounded description is supported by the supplied excerpt.') for t in s.QUERIES])
  async def test_one_bad_section_does_not_erase_other_eight(self):
   payload={'company_id':'hul','company':'Hindustan Unilever Limited','research':{}}
-  with patch.object(s.inv,'prepared_passages',return_value=(self.rows,{'signature':'fixture'})),patch.object(s.model,'generate',new=AsyncMock(side_effect=[self.drafts(True),self.reviews()])):
+  bad=self.drafts(True)
+  repair=s.Repairs(assessments=[bad.assessments[0]])
+  with patch.object(s.inv,'prepared_passages',return_value=(self.rows,{'signature':'fixture'})),patch.object(s.model,'generate',new=AsyncMock(side_effect=[bad,repair,self.reviews()])):
    audit=await s.complete(payload,'section-test')
   self.assertEqual(len(audit['areas']),9)
   self.assertEqual(audit['areas'][0]['status'],'missing')
@@ -57,3 +59,31 @@ class Sections(AuditFixture,unittest.IsolatedAsyncioTestCase):
  def test_topic_duplicates_rejected(self):
   draft=self.drafts();draft.assessments[1].topic=draft.assessments[0].topic
   with self.assertRaises(ValueError):s.unique(draft.assessments)
+ async def test_reviewer_receives_dates_and_reporting_scope(self):
+  payload={'company_id':'hul','company':'Hindustan Unilever Limited','research':{},
+           'history':{'periods':[{'start':'2025-04-01','end':'2026-03-31','scope':'consolidated continuing operations','qualification':'Prior disposals affect comparability.'}]}}
+  with patch.object(s.inv,'prepared_passages',return_value=(self.rows,{'signature':'fixture'})),patch.object(s.model,'generate',new=AsyncMock(side_effect=[self.drafts(),self.reviews()])) as generate:
+   await s.complete(payload,'section-test')
+  for call in generate.await_args_list:
+   temporal=call.args[2]['temporal_scope']
+   self.assertEqual(temporal['historical_periods'][0]['end'],'2026-03-31')
+   self.assertIn('disposals',temporal['rule'])
+   self.assertIn('undated',temporal['rule'])
+ async def test_missing_section_gets_one_source_checked_repair_before_review(self):
+  draft=self.drafts();draft.assessments[2].statements=[]
+  replacement=self.drafts().assessments[2]
+  payload={'company_id':'hul','company':'Hindustan Unilever Limited','research':{}}
+  with patch.object(s.inv,'prepared_passages',return_value=(self.rows,{'signature':'fixture'})),patch.object(s.model,'generate',new=AsyncMock(side_effect=[draft,s.Repairs(assessments=[replacement]),self.reviews()])) as generate:
+   audit=await s.complete(payload,'section-test')
+  self.assertEqual([call.args[1] for call in generate.await_args_list],['sector','sector-repair','sector-review'])
+  self.assertEqual(sum(a['status']=='complete' for a in audit['areas']),9)
+  self.assertEqual(audit['repair']['targets'],['Costs and profitability'])
+  self.assertTrue(audit['critic'])
+ async def test_failed_repair_keeps_valid_siblings_and_runs_critic(self):
+  draft=self.drafts();draft.assessments[2].statements=[]
+  payload={'company_id':'hul','company':'Hindustan Unilever Limited','research':{}}
+  with patch.object(s.inv,'prepared_passages',return_value=(self.rows,{'signature':'fixture'})),patch.object(s.model,'generate',new=AsyncMock(side_effect=[draft,model.ModelUnavailable('Repair unavailable'),self.reviews()])):
+   audit=await s.complete(payload,'section-test')
+  self.assertEqual(sum(a['status']=='complete' for a in audit['areas']),8)
+  self.assertEqual(audit['areas'][2]['status'],'missing')
+  self.assertIn('Repair unavailable',audit['repair']['error'])

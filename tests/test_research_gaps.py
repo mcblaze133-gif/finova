@@ -60,7 +60,7 @@ class GapTests(unittest.IsolatedAsyncioTestCase):
     async def test_provider_independent_search_failures_remain_visible(self):
         with patch.object(g.investigation,'prepared_passages',return_value=([],{'signature':'hash'})),patch.object(g,'search_with_fallback',new=AsyncMock(side_effect=ValueError('upstream unavailable'))) as search:
             d=await g.investigate({'company_id':'britannia','history':history()})
-        self.assertEqual(search.await_count,3)
+        self.assertEqual(search.await_count,4)
         self.assertTrue(all('gap remains' in a['status'] for a in d['retrieval_audit']))
         self.assertTrue(d['unresolved']);self.assertEqual(len(d['topics']),8)
 

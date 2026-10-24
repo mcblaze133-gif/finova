@@ -160,7 +160,7 @@ class OnlineUpdateTests(unittest.TestCase):
     def test_two_call_exception_is_scoped_and_cannot_be_extended(self):
         first, _ = updates.create('demo')
         with storage.database() as db:
-            db.execute('UPDATE research_runs SET model_calls=100 WHERE id=?',(first,))
+            db.execute('UPDATE research_runs SET model_calls=? WHERE id=?',(model.DAILY_REQUEST_LIMIT,first))
             db.execute("UPDATE research_runs SET status='partial' WHERE id=?",(first,))
             db.execute("UPDATE company_update_runs SET status='partial' WHERE id=?",(first,))
         second, _ = updates.create('demo')

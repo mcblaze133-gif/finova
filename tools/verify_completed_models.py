@@ -41,9 +41,20 @@ def main():
                 target=target.lstrip('/') if target.startswith('/') else 'xl/'+target
                 sheets[sheet.get('name')]=cells(archive,strings,target)
                 table_count+=sum(f.get('t')=='dataTable' for f in ET.fromstring(archive.read(target)).findall('.//s:f',NS))
-            expected_sheets=19-sum(not data.get(k) for k in ('peers','transactions','assets','segments'))
+            expected_sheets=19-sum(not data.get(k) for k in ('peers','transactions','assets','segments'))+int(len(data.get('sector_comparison',{}).get('rows',[]))>1)
             assert len(sheets)==expected_sheets and table_count==3
             assert 'Statement history' in sheets
+            if data.get('sector_comparison',{}).get('rows'):
+                peer_cells=sheets['Sector comparison']
+                for i,peer in enumerate(data['sector_comparison']['rows'],6):
+                    v=peer['values'];revenue=v['revenue']
+                    assert peer_cells[f'C{i}']==peer['company']
+                    for column,numerator,denominator in [('F','ebitda','revenue'),('G','cfo','net_income'),('H','capex','revenue')]:
+                        if numerator in v and denominator in v and v[denominator]>0:equal(peer_cells[f'{column}{i}'],v[numerator]/v[denominator],peer['company']+' '+column)
+                        else:assert peer_cells[f'{column}{i}']=='n.a.'
+                    if 'prior_revenue' in v and v['prior_revenue']>0:equal(peer_cells[f'E{i}'],revenue/v['prior_revenue']-1,'peer matched growth')
+                    else:assert peer_cells[f'E{i}']=='n.a.'
+                    if 'debt' in v and 'cash' in v and revenue>0:equal(peer_cells[f'I{i}'],(v['debt']-v['cash'])/revenue,'peer net debt')
             history=sheets['Statement history']
             for y,period in enumerate(data['historical_statements']['periods']):
                 c=chr(68+y)

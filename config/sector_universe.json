@@ -1,0 +1,15 @@
+{
+  "track": "Indian FMCG",
+  "reference_date": "2026-02-27",
+  "source": "https://www.niftyindices.com/docs/default-source/indices/nifty-50/nifty-50-whitepaper_2026.pdf?sfvrsn=41f76335_5",
+  "source_description": "NSE Indices 2026 Nifty 50 whitepaper, Exhibit 26, constituents as on 27 February 2026",
+  "current_membership_verified": false,
+  "limitation": "Latest constituent CSV download was unavailable on 24 October 2026. This dated reference is not a live membership certificate. Hackathon eligibility follows the organiser's specified universe/date.",
+  "companies": [
+    {"id": "hul", "role": "Reference NIFTY 50 FMCG constituent"},
+    {"id": "itc", "role": "Reference NIFTY 50 FMCG constituent"},
+    {"id": "nestle-india", "role": "Reference NIFTY 50 FMCG constituent"},
+    {"id": "tata-consumer", "role": "Reference NIFTY 50 FMCG constituent"},
+    {"id": "britannia", "role": "Supplementary FMCG coverage", "note": "Removed from NIFTY 50 effective 28 March 2025; later re-entry not established.", "source": "https://www.niftyindices.com/Press_Release/ind_prs21022025.pdf"}
+  ]
+}

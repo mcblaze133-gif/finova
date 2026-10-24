@@ -16,6 +16,9 @@ class ReportTests(AuditFixture,unittest.IsolatedAsyncioTestCase):
         self.build_args=[]
         self.section_check=AsyncMock()
         self.enterContext(patch('backend.sector_research.complete',new=self.section_check))
+        self.enterContext(patch.object(ar.excel_engine,'company_package',return_value={'historical_statements':{'periods':[]}}))
+        self.targeted_check=AsyncMock(return_value={'signals':[],'retrieval_audit':[{'side':'competitive_evidence','originals':[]}]})
+        self.enterContext(patch('backend.research_gaps.investigate',new=self.targeted_check))
 
     async def fresh_research(self,run_id):
         update_id='u'+run_id[1:]
@@ -52,6 +55,10 @@ class ReportTests(AuditFixture,unittest.IsolatedAsyncioTestCase):
                 first=(await client.get(jobs[0]['status_url'])).json();self.assertIn(jobs[0]['report_id'],first['pdf_url'])
         self.assertEqual(reads.await_count,2)
         self.assertEqual(self.section_check.await_count,2)
+        self.assertEqual(self.targeted_check.await_count,2)
+        for call in self.section_check.await_args_list:
+            self.assertIn('targeted_research',call.args[0])
+            self.assertEqual(call.args[0]['targeted_research']['retrieval_audit'][0]['side'],'competitive_evidence')
         self.assertTrue(all(args[2].get('analysis_report_id') for args in self.build_args))
         self.assertNotEqual(self.build_args[0][1],self.build_args[1][1])
         self.assertNotEqual(self.build_args[0][2]['research_update_id'],self.build_args[1][2]['research_update_id'])

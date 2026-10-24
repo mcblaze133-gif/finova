@@ -21,7 +21,7 @@ Hindustan Unilever (HUL) is the prepared Round 1 case, covering FY2022–FY2026.
 The reviewed local history has 83 of 85 statement values populated; this is not
 a claim of complete financial or research coverage.
 
-1. Select a company and click **Investigate company**.
+1. Select a company and click **Generate research report**.
 2. The system reads its compact evidence pack, attempts a fresh bounded online
    update check, and runs planner, extractor, analyst and sceptical-review stages.
 3. It builds a new research report and a matching editable Excel workbook from
@@ -33,6 +33,14 @@ a claim of complete financial or research coverage.
 The private prepared company library is not shipped in this repository.
 A fresh clone does not contain the demonstration's database or evidence packs.
 No public deployment or demo-video URL is claimed by this README.
+
+The 24 October cross-company check also exercised Britannia, ITC, Nestle India
+and Tata Consumer, with matching research PDFs, Excel files and source links.
+The local `/sector/coverage/view` register distinguishes delivery checks from
+unresolved research. All five outputs include source-linked operating comparisons
+calculated in Excel. They are not yet an approved comparable-valuation peer set.
+See [scope, comparison methodology and remaining peer work](docs/SECTOR_UNIVERSE.md)
+and [reproducible delivery checks](docs/CROSS_COMPANY_CHECKS.md).
 
 ## Research and financial outputs
 
@@ -93,7 +101,7 @@ source library is empty; do not interpret the company list as populated data.
    [evidence-pack guide](inputs/EVIDENCE_PACK_GUIDE.md). Financial records require
    explicit units, periods, accounting scope and reviewed source evidence.
 
-The normal local model ceiling is 100 attempts per UTC day, including failures;
+The normal local model ceiling is 200 attempts per UTC day, including failures;
 it does not increase provider quota. There is no paid fallback. Keys, account
 allowances and local billing confirmations are not transferred with this code.
 

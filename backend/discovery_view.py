@@ -141,12 +141,24 @@ def build(payload):
             'sources':refs,'investor_use':event.get('review_action') or 'Check company exposure before changing forecasts.',
             'comparison':[], 'counterargument':None,'falsification':event.get('falsification')})
 
+    comparison = payload.get('sector_comparison') or {}
+    peer_rows = []
+    for peer in comparison.get('rows', []):
+        refs = []
+        for metric, items in peer.get('sources', {}).items():
+            for ref in items:
+                url = safe_url(ref.get('url'))
+                if url:
+                    refs.append({'url':url,'title':peer['company']+' · '+metric,'page':ref.get('pages')})
+        if refs and peer.get('metrics'):
+            peer_rows.append({k:peer.get(k) for k in ('company_id','company','subject','end','scope','metrics','reason','verification')} | {'sources':refs})
     val = payload.get('valuation') or {}
     return {'report_id':payload.get('report_id'),'company_id':payload.get('company_id'),
         'company':payload.get('company'),'generated_at':payload.get('generated_at'),
         'news_checked_at':news.get('checked_at'),'valuation_date':val.get('valuation_date'),
         'market_price_date':val.get('market_price_date'),'market_price':val.get('market_price'),
         'cards':cards,'business':business,'updates':updates,
+        'sector_comparison':{'rows':peer_rows,'status':comparison.get('status'),'limitations':comparison.get('limitations',[])},
         'verified_discoveries':0, 'omitted_unlinked_claims':omitted,
         'coverage':payload.get('coverage',{}),
         'qualification':'Verification labels describe the checks available. No finding in this report has a completed independent analyst verification attestation.'}

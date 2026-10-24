@@ -8,7 +8,7 @@ from backend import storage
 from backend.config import model_settings, ROOT
 
 
-DAILY_REQUEST_LIMIT = 100
+DAILY_REQUEST_LIMIT = 200
 
 
 class ModelUnavailable(RuntimeError):
@@ -251,7 +251,7 @@ async def generate(run_id, role, context, schema):
         try:
             # Section callers have a 120-second outer budget. Leave room for
             # the single transport retry instead of consuming it in attempt 1.
-            read_budget=50 if role in ('sector','sector-review') else 100
+            read_budget=50 if role in ('sector','sector-review','sector-repair') else 100
             async with httpx.AsyncClient(timeout=httpx.Timeout(read_budget,connect=10), trust_env=False) as client:
                 response = await client.post(f'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent',
                                              headers={'x-goog-api-key': key}, json=payload)

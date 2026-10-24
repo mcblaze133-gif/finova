@@ -41,17 +41,17 @@ class AuditFixture:
 
 
 class PersistenceAudit(AuditFixture, unittest.TestCase):
-    def test_normal_daily_limit_is_100_preserves_usage_and_enforces_boundary(self):
-        self.assertEqual(model.DAILY_REQUEST_LIMIT,100)
+    def test_normal_daily_limit_is_200_preserves_usage_and_enforces_boundary(self):
+        self.assertEqual(model.DAILY_REQUEST_LIMIT,200)
         timestamp=storage.now()
-        self.run_row('used',timestamp,99)
+        self.run_row('used',timestamp,199)
         self.run_row('next',timestamp)
         model.require_capacity(1)
         with self.assertRaises(model.ModelUnavailable):model.require_capacity(2)
         model.reserve_call('next')
         with storage.database() as db:
-            self.assertEqual(model._daily_limit(db,timestamp[:10]),100)
-            self.assertEqual(model._daily_calls(db,timestamp[:10]),100)
+            self.assertEqual(model._daily_limit(db,timestamp[:10]),200)
+            self.assertEqual(model._daily_calls(db,timestamp[:10]),200)
         with self.assertRaises(model.ModelUnavailable):model.reserve_call('next')
 
     def test_twenty_more_preserves_usage_is_idempotent_and_expires(self):
@@ -121,7 +121,7 @@ class PersistenceAudit(AuditFixture, unittest.TestCase):
         self.run_row('older-run','2026-10-18T23:59:00+00:00')
         with patch.object(storage,'now',return_value='2026-10-18T23:59:30+00:00'):
             model.reserve_call('older-run')
-        self.run_row('legacy-today','2026-10-19T00:00:01+00:00',99)
+        self.run_row('legacy-today','2026-10-19T00:00:01+00:00',model.DAILY_REQUEST_LIMIT-1)
         with patch.object(storage,'now',return_value='2026-10-19T00:01:00+00:00'):
             model.reserve_call('older-run')
             with self.assertRaises(model.ModelUnavailable):

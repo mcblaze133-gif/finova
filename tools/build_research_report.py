@@ -371,6 +371,23 @@ def build(data,target):
     if any(m['method']=='DDM' for m in val.get('methods',[])):body('DDM values expected shareholder distributions using cost of equity. A credible payout policy and sustainable terminal returns are necessary; a high historical dividend does not on its own validate the model.')
     if any(m['method']=='SOTP' for m in val.get('methods',[])):body('SOTP values economically distinct businesses separately, then reconciles ownership and unallocated claims. Segment multiples remain assumptions where comparable market evidence is incomplete.')
     body('P/E and EV/EBITDA outputs marked as stress tests show what selected earnings or operating-profit multiples imply. They are not independently validated comparable-company conclusions when a reviewed category-matched forward peer set is absent.')
+    comparison=data.get('sector_comparison') or {}
+    if comparison.get('rows'):
+        sub('Sector operating benchmarks')
+        body('Reported profitability, cash backing and investment intensity help test whether a growth or quality premium has operating support. These group comparisons do not establish category-matched valuation peers. ITC requires segment-level comparisons. Different operating scopes and EBITDA definitions must be reconciled before ranking companies.')
+        rows=[['Company / period','Sales growth','EBITDA margin','CFO / PAT','Capex / sales']]
+        for peer in comparison['rows']:
+            m=peer.get('metrics',{});refs=[]
+            for metric,items in peer.get('sources',{}).items():
+                for ref in items:
+                    refs.append(source(ref.get('sha256'),Path(ref['file']).name,
+                        'http://127.0.0.1:8000'+ref['url'],ref.get('pages')))
+            label=peer['company']+' / '+peer['end']+'\n'+peer['scope']
+            rows.append([referenced_paragraph(label,sorted(set(refs)),'cell'),
+                         fmt(m.get('revenue_growth'),'pct'),fmt(m.get('ebitda_margin'),'pct'),
+                         fmt(m.get('cash_conversion'),'multiple'),fmt(m.get('capex_ratio'),'pct')])
+        story.append(table(rows,[180]+[(CONTENT-180)/4]*4))
+        note('Source: saved Excel Sector comparison formulas and reviewed historical inputs. Reported figures are not normalised earnings. Missing comparable capex or history is left unavailable. No peer-backed valuation weight has been assigned.')
     if weighted:
         sub('Reconciled conditional range')
         body('Bear '+fmt(weighted['bear'],'price')+'; base '+fmt(weighted['base'],'price')+'; bull '+fmt(weighted['bull'],'price')+' per share. Weights reflect the selected methods, not a mechanical average of every available formula.')

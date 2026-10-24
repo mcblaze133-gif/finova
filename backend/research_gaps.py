@@ -205,7 +205,8 @@ async def investigate(payload,*,live=True):
     dossier=local_dossier(payload,rows);dossier['pack_proof']=proof
     if not live:return dossier
     query=dossier['signals'][0]['query'] if dossier['signals'] else TOPICS[0][1]
-    queries=[('support',query),('challenge','capital expenditure working capital temporary timing risks'),
+    queries=[('competitive_evidence','market share competition categories distribution industry'),
+             ('support',query),('challenge','capital expenditure working capital temporary timing risks'),
              ('peer_gap','peer valuation forward earnings EBITDA comparable')]
     async def retrieve():
         for side,q in queries:

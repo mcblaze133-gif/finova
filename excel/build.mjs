@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import { Workbook, SpreadsheetFile } from '@oai/artifact-tool';
+import { buildSectorComparison } from './sector_comparison.mjs';
 
 const args=process.argv.slice(2), option=k=>args[args.indexOf(k)+1];
 const input=JSON.parse(await fs.readFile(option('--input'),'utf8'));
@@ -12,6 +13,7 @@ const nativeLink=(sheet,cell,url,label)=>{sheets[sheet].getRange(cell).values=[[
 const names=['Dashboard','Assumptions','Bear','Base','Bull','Multiple policy','Peers','Transactions','Segments','NAV','Financials','Market','Methods','Drivers','Checks','Sources','Guide'];
 if(input.research_notes?.length)names.splice(5,0,'Research');
 if(input.historical_statements?.periods?.length)names.splice(1,0,'Statement history');
+if(input.sector_comparison?.rows?.length>1)names.splice(1,0,'Sector comparison');
 const sheets=Object.fromEntries(names.map(n=>[n,wb.worksheets.add(n)]));
 const ink='#172F48', teal='#12695C', blue='#0000FF', green='#008000', light='#EDF3F6', amber='#FFF1CD';
 const amount='#,##0;(#,##0);"-"', pct='0.0%;(0.0%);"-"', price='"₹"#,##0.00;("₹"#,##0.00);"-"';
@@ -137,6 +139,8 @@ put('Drivers','C12','Direct growth rationale');inputCell('Drivers','E12',input.d
 put('Drivers','C14','Disclosed driver');put('Drivers','F14','Source evidence');
 input.drivers.forEach((d,i)=>block('Drivers',`C${15+i}`,[[d.driver,d.source_type,d.confidence,d.source]]));
 if(input.drivers.length){sheets.Drivers.getRange('D:D').format.columnWidth=26;sheets.Drivers.getRange('F:F').format.columnWidth=82;sheets.Drivers.getRange(`C15:F${14+input.drivers.length}`).format.wrapText=true;sheets.Drivers.getRange(`C15:F${14+input.drivers.length}`).format.rowHeight=38;}
+
+buildSectorComparison(input,{sheets,title,block,put,form,ready,nativeLink,ink,blue,pct});
 
 // Peer normalization and matching-period exclusions are visible to the analyst.
 title('Peers','Comparable company analysis','Include only reviewed comparable observations with a consistent valuation date and financial period.');
@@ -512,6 +516,16 @@ for(const [s,a,value] of original.reverse())sheets[s].getRange(a).values=value;
 wb.recalculate();
 if(input.sources.length===0)assert.equal(sheets.Dashboard.getRange('E25').values[0][0],'n.a.','Empty financial library must not produce a valuation');
 verification.scenarios=Object.fromEntries(['Bear','Base','Bull'].map(s=>[s,{dcfPerShare:sheets[s].getRange('G66').values[0][0],pePerShare:sheets[s].getRange('G68').values[0][0],evEbitdaPerShare:sheets[s].getRange('G69').values[0][0],yearOneRevenue:sheets[s].getRange('E8').values[0][0],yearOneEps:sheets[s].getRange('E28').values[0][0],wacc:sheets[s].getRange('E36').values[0][0],terminalGrowth:sheets[s].getRange('E46').values[0][0],equityBridge:sheets[s].getRange('E61').values[0][0]}]));
+if(sheets['Sector comparison']){
+ const s='Sector comparison',q=Math.max(20,Math.max(13,input.sector_comparison.rows.length+8)+7)+1,before=num(s,'F6'),source=sheets[s].getRange(`G${q}`).values;
+ if(typeof source[0][0]==='number'){
+  put(s,`G${q}`,source[0][0]+1);wb.recalculate();
+  assert.ok(Math.abs(num(s,'F6')-before-1/num(s,`F${q}`))<1e-10,'Peer EBITDA input updates live margin');
+  sheets[s].getRange(`G${q}`).values=source;wb.recalculate();
+  assert.equal(num(s,'F6'),before,'Peer EBITDA source restored');
+ }
+ verification.fixtureChecks.push('Sector operating comparison live source sensitivity');
+}
 if(input.sources.length){
  for(const s of ['Bear','Base','Bull'])assert.ok(Number.isFinite(num(s,'G66'))&&num(s,'G66')>0,'Populated company DCF must calculate: '+s);
  block('Dashboard','K54',[['Case','DCF per share']]);
@@ -564,7 +578,7 @@ const finalScan=await wb.inspect({kind:'match',searchTerm:'#REF!|#DIV/0!|#VALUE!
 await fs.writeFile(path.join(out,'formula-scan.json'),finalScan.ndjson);
 assert.ok(!finalScan.ndjson.includes('"kind":"match"'),'Workbook contains spreadsheet errors');
 await fs.writeFile(path.join(out,'verification.json'),JSON.stringify(verification,null,2));
-for(const name of names){if(args.includes('--focused-previews')&&!['Dashboard','Financials','Statement history'].includes(name))continue;const range=name==='Assumptions'?'C2:P15':name==='Guide'?'C2:D17':name==='Dashboard'?'C2:Q51':name==='Research'?'C2:E17':name==='Peers'?'C2:J12':name==='Multiple policy'?'C2:N13':name==='Transactions'?'C2:L12':name==='Sources'?'C2:J12':name==='Segments'&&input.segments?.length?'C2:N33':name==='Segments'?'C2:M12':name==='Checks'?'C2:E14':name==='NAV'?'C2:I12':name==='Statement history'?`C2:${col(2+input.historical_statements.periods.length)}33`:name==='Financials'?'C2:I38':name==='Market'?'C2:F25':name==='Methods'?'C2:H20':name==='Drivers'?'C2:H17':'C2:I20';
+for(const name of names){if(args.includes('--focused-previews')&&!['Dashboard','Financials','Statement history','Sector comparison'].includes(name))continue;const range=name==='Sector comparison'?'C2:J15':name==='Assumptions'?'C2:P15':name==='Guide'?'C2:D17':name==='Dashboard'?'C2:Q51':name==='Research'?'C2:E17':name==='Peers'?'C2:J12':name==='Multiple policy'?'C2:N13':name==='Transactions'?'C2:L12':name==='Sources'?'C2:J12':name==='Segments'&&input.segments?.length?'C2:N33':name==='Segments'?'C2:M12':name==='Checks'?'C2:E14':name==='NAV'?'C2:I12':name==='Statement history'?`C2:${col(2+input.historical_statements.periods.length)}33`:name==='Financials'?'C2:I38':name==='Market'?'C2:F25':name==='Methods'?'C2:H20':name==='Drivers'?'C2:H17':'C2:I20';
  const blob=await wb.render({sheetName:name,range,scale:1,format:'png'});await fs.writeFile(path.join(out,'preview-'+name.replaceAll(' ','-')+'.png'),new Uint8Array(await blob.arrayBuffer()));}
 if(input.sources.length){for(const [label,sheetName,range] of [['Base-results','Base','C45:J95'],['Base-sensitivity','Base','K6:P23'],['Market-bridge','Market','C22:K40']]){const blob=await wb.render({sheetName,range,scale:1,format:'png'});await fs.writeFile(path.join(out,'preview-'+label+'.png'),new Uint8Array(await blob.arrayBuffer()));}}
 if(input.research_report){

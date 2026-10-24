@@ -18,6 +18,8 @@ from backend.evidence_packs import digest_file
 def input_fingerprint(package):
     import hashlib
     semantic = {k: v for k, v in package.items() if k != 'created_at'}
+    if semantic.get('sector_comparison'):
+        semantic['sector_comparison']={k:v for k,v in semantic['sector_comparison'].items() if k!='checked_at'}
     if not semantic.get('verification_audit') and package.get('company_id'):
         from backend import verification
         semantic['verification_audit']=verification.build(package['company_id'],package,package.get('external_updates'))
@@ -48,7 +50,7 @@ def normalized_value(record):
     return float(finite(record.value) * factor)
 
 
-def company_package(company, update_run_id=None):
+def company_package(company, update_run_id=None, *, include_comparison=True):
     if not re.fullmatch(r'[a-z0-9-]{2,60}', company):
         raise ValueError('Use a registered company ID or a simple lower-case company slug.')
     records = library.company_records(company)
@@ -170,6 +172,9 @@ def company_package(company, update_run_id=None):
                           'source':lead['url']})
         package['issues'].append(f"Online refresh {update['status']}: {len(result.get('events', []))} assessed events, "
                                 f"{len(result.get('news_leads', []))} unverified news leads. Review Research before treating valuations as current.")
+    if include_comparison and package['historical_statements'].get('periods'):
+        from backend import sector_comparison
+        package['sector_comparison'] = sector_comparison.build(package)
     return package
 
 

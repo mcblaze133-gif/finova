@@ -126,6 +126,45 @@ Company-news feeds and official-source retrieval remain separate. This bounds
 repeated waits on one unreachable service without marking research complete.
 Restart the local backend after a code update to load this behavior.
 
+## 24 October cross-company extension
+
+All five scoped companies passed checks of exact report identity, downloaded PDF
+bytes, downloaded Excel hash, historical statement presence, report-bound source
+register, source-linked findings and archived PDF links. Each report includes the
+same five source-linked operating benchmarks. Twenty-five saved comparison
+results per workbook were independently recalculated, including unavailable-value
+handling. The latest selected outputs have 370 checked historical input values
+in total, with no saved formula errors. Workbook forecast and equity-bridge checks
+passed; native desktop Excel recalculation remains unverified.
+
+The automated suite contains 255 passing tests. The polling checks cover recovery,
+tab resume, duplicate-request prevention and stale-result isolation. Source PDFs
+now open inline at their cited page, after checking their archived SHA-256; HTML
+originals stay download-only. A changed archive is rejected.
+
+The local coverage register has 7/9 operating areas complete for HUL and 8/9 for
+each other company in the selected runs. Competition evidence remains incomplete,
+as do independently corroborated discoveries and fully verified current-event
+coverage. No independently verified discovery is claimed. HUL's review revision
+is explicitly labelled and retains its original news-check date. ITC and Tata
+Consumer completed new investigations after the local daily cap was raised to
+200 by explicit user instruction. The eight-attempt per-run cap remains.
+
+The direct official market archive was unreachable, but the NSE browser's Equity
+historical-data downloads supplied all five EQ closes for 23 October. Original
+CSVs and their source/hash register remain private. Twelve SLB files were rejected;
+lending fees were never used as share prices. These new observations have not
+silently overwritten existing model prices. Share counts, corporate actions,
+normalised earnings and category/segment suitability still need review before
+comparable valuation can receive reconciliation weight.
+
+For an exact-ID audit that also checks all comparison outputs and archive links:
+
+```powershell
+.\.venv\Scripts\python.exe -m tools.verify_sector_outputs --audit reports/<selected-live-audit>.json
+.\.venv\Scripts\python.exe -m tools.verify_sector_coverage
+```
+
 Structured model calls can retry a transport failure once using the same
 configured provider and model. Both attempts consume the application allowance;
 authentication/quota errors and invalid structured responses are not retried.
