@@ -17,3 +17,6 @@ conflicting document identities. Selected documentary reviews explain exactly
 how source facts were checked, including explicitly labelled visual
 transcriptions for scanned originals. This is separate from independent
 verification of an investment discovery. The current offline suite has 272 tests.
+# Transcript clarifications
+
+Profitability excerpts preserve explicit speaker corrections rather than treating an interviewer's premise as guidance. Reviewed documentary clarifications are checked against archived file hashes and exact quotations before being supplied to the sector analyst and displayed in the report. Quarterly charges, annual liabilities and continuing-operations adjustments remain distinct; a disclosure without a supported allocation is not an automatic EBITDA add-back.

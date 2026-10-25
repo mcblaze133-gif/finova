@@ -1,5 +1,5 @@
 """Independent, source-checked sector assessments; discovery failure cannot erase them."""
-import asyncio,json
+import asyncio,json,re
 from typing import Literal
 from pydantic import Field
 from backend import research as r, investigation as inv, storage, model
@@ -72,6 +72,12 @@ def selected_passages(rows):
     from backend.research_gaps import excerpt
     item=excerpt(hit,query)
     text=item['quote']
+    correction=re.search(r'if I may correct|let me correct|to clarify|for clarity',hit['text'],re.I)
+    if correction and topic=='Costs and profitability':
+     # Preserve the response correcting an interviewer's premise rather than
+     # presenting the opening question as management guidance.
+     start=max(0,correction.start()-180)
+     text=hit['text'][start:start+1400]
     if 'Reviewed financial record index' in hit['text']:continue
     if r.normalized(text) not in r.normalized(hit['text']):continue
     if hit['id'] not in selected:selected[hit['id']]=dict(hit,text=text[:1400])
@@ -92,6 +98,15 @@ async def complete(payload,run_id):
    found=storage.rows('SELECT p.id,p.document_id,p.pdf_page,p.text,d.company,d.title,d.original_url,d.publication_date,d.sha256 FROM passages p JOIN documents d ON d.id=p.document_id WHERE p.id=? AND d.company=?',(pid,payload['company_id']))
    rows.extend(found)
   selected,searches=selected_passages(rows)
+  # Reviewed documentary clarifications must reach the analyst as well as the
+  # rendered report. Validate the original bytes and quotation before inclusion.
+  from backend import source_reviews
+  for review in source_reviews.build(payload['company_id']):
+   for ref in review.get('evidence',[]):
+    found=next((p for p in rows if p['document_id']==ref['document_id'] and p['pdf_page']==ref['page']),None)
+    if found and r.normalized(ref['quote']) in r.normalized(found['text']):
+     selected=[p for p in selected if p['id']!=found['id']]
+     selected.append(dict(found,text=ref['quote'][:1400]))
   from backend import public_sources
   external=public_sources.passages(raw.get('registered_source_refresh',{}),'competition market position margins demand capital risks outlook',6)
   selected.extend(external)
