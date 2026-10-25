@@ -8,7 +8,7 @@ from backend import storage
 from backend.config import model_settings, ROOT
 
 
-DAILY_REQUEST_LIMIT = 200
+DAILY_REQUEST_LIMIT = 400
 
 
 class ModelUnavailable(RuntimeError):

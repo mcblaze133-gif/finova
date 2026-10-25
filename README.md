@@ -101,7 +101,7 @@ source library is empty; do not interpret the company list as populated data.
    [evidence-pack guide](inputs/EVIDENCE_PACK_GUIDE.md). Financial records require
    explicit units, periods, accounting scope and reviewed source evidence.
 
-The normal local model ceiling is 200 attempts per UTC day, including failures;
+The normal local model ceiling is 400 attempts per UTC day, including failures;
 it does not increase provider quota. There is no paid fallback. Keys, account
 allowances and local billing confirmations are not transferred with this code.
 

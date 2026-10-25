@@ -41,17 +41,17 @@ class AuditFixture:
 
 
 class PersistenceAudit(AuditFixture, unittest.TestCase):
-    def test_normal_daily_limit_is_200_preserves_usage_and_enforces_boundary(self):
-        self.assertEqual(model.DAILY_REQUEST_LIMIT,200)
+    def test_normal_daily_limit_is_400_preserves_usage_and_enforces_boundary(self):
+        self.assertEqual(model.DAILY_REQUEST_LIMIT,400)
         timestamp=storage.now()
-        self.run_row('used',timestamp,199)
+        self.run_row('used',timestamp,399)
         self.run_row('next',timestamp)
         model.require_capacity(1)
         with self.assertRaises(model.ModelUnavailable):model.require_capacity(2)
         model.reserve_call('next')
         with storage.database() as db:
-            self.assertEqual(model._daily_limit(db,timestamp[:10]),200)
-            self.assertEqual(model._daily_calls(db,timestamp[:10]),200)
+            self.assertEqual(model._daily_limit(db,timestamp[:10]),400)
+            self.assertEqual(model._daily_calls(db,timestamp[:10]),400)
         with self.assertRaises(model.ModelUnavailable):model.reserve_call('next')
 
     def test_twenty_more_preserves_usage_is_idempotent_and_expires(self):
