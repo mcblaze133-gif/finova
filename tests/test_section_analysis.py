@@ -13,6 +13,15 @@ class Sections(AuditFixture,unittest.IsolatedAsyncioTestCase):
  def drafts(self,bad=False):
   return s.Assessments(assessments=[dict(topic=t,statements=[self.statement if not bad or i else {'text':'Invalid unsupported statement.','citations':[{'passage_id':999,'excerpt_id':0}]}],counterevidence=None,investor_use='Use this attributed evidence to frame further company research.',gaps=[]) for i,t in enumerate(s.QUERIES)])
  def reviews(self):return s.Decisions(decisions=[dict(topic=t,verdict='supported',reason='The bounded description is supported by the supplied excerpt.') for t in s.QUERIES])
+ async def test_critic_receives_all_cited_sources_without_unused_search_candidates(self):
+  payload={'company_id':'hul','company':'Hindustan Unilever Limited','research':{}}
+  extra=dict(self.rows[0],id=2,text='Uncited retrieval candidate. '*50)
+  with patch.object(s.inv,'prepared_passages',return_value=(self.rows,{'signature':'fixture'})),patch.object(s,'selected_passages',return_value=([*self.rows,extra],[])),patch.object(s.model,'generate',new=AsyncMock(side_effect=[self.drafts(),self.reviews()])) as generate:
+   audit=await s.complete(payload,'section-test')
+  self.assertEqual(audit['status'],'complete')
+  self.assertEqual({p['id'] for p in generate.await_args_list[0].args[2]['passages']},{1,2})
+  self.assertEqual({p['id'] for p in generate.await_args_list[1].args[2]['passages']},{1})
+  self.assertEqual({p['id'] for p in audit['passage_catalog']},{1,2})
  async def test_one_bad_section_does_not_erase_other_eight(self):
   payload={'company_id':'hul','company':'Hindustan Unilever Limited','research':{}}
   bad=self.drafts(True)

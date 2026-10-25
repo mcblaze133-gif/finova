@@ -151,7 +151,12 @@ async def complete(payload,run_id):
    if isinstance(value,dict):return {k:compact(v) for k,v in value.items() if k!='quote'}
    if isinstance(value,list):return [compact(v) for v in value]
    return value
-  critic=await asyncio.wait_for(model.generate(run_id,'sector-review',{'company':payload['company'],'assessments':compact([s.model_dump(mode='json') for s in checked]),'passages':catalog,'temporal_scope':temporal,
+  cited={c.passage_id for s in checked for statement in [*s.statements,*([s.counterevidence] if s.counterevidence else [])] for c in statement.citations}
+  # The critic reviews the actual claims and their cited originals. Unused
+  # retrieval candidates remain in the audit, without duplicating a large
+  # search catalog alongside the full nine-area assessment.
+  critic_catalog=[p for p in catalog if p['id'] in cited]
+  critic=await asyncio.wait_for(model.generate(run_id,'sector-review',{'company':payload['company'],'assessments':compact([s.model_dump(mode='json') for s in checked]),'passages':critic_catalog,'temporal_scope':temporal,
       'instructions':'Reject unsupported current-tense conclusions from old or undated evidence. Require the stated reporting period and ownership/scope, a direct economic mechanism, and a relevant counterargument. Multiple issuer documents are not independent corroboration. Mark genuine missing market-share evidence partial rather than accepting confident leadership language.'},Decisions),120)
   unique(critic.decisions);decisions={d.topic:d for d in critic.decisions}
   audit['critic']=critic.model_dump(mode='json')
